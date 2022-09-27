@@ -1,0 +1,43 @@
+{
+  "name": "didyouget-backend",
+  "version": "1.0.0",
+  "description": "Backend service for the 'didyouget' shopping list app",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "ts-node ./src/index.ts",
+    "dev": "nodemon ./src/index.ts",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "shopping",
+    "list",
+    "nodejs"
+  ],
+  "author": "Felix Wohlfrom",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@types/node": "^18.7.23",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "eslint": "^8.24.0",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.3"
+  },
+  "dependencies": {
+    "@graphql-tools/graphql-file-loader": "^7.5.5",
+    "@graphql-tools/load": "^7.7.7",
+    "@graphql-tools/schema": "^9.0.4",
+    "apollo-server-core": "^3.10.2",
+    "apollo-server-fastify": "^3.10.2",
+    "argon2": "^0.29.1",
+    "dotenv": "^16.0.2",
+    "graphql-middleware": "^6.1.32",
+    "graphql-shield": "^7.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mariadb": "^3.0.1",
+    "sequelize": "^6.23.1"
+  }
+}
