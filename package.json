@@ -35,7 +35,7 @@
     "argon2": "^0.29.1",
     "dotenv": "^16.0.3",
     "graphql-middleware": "^6.1.32",
-    "graphql-shield": "^7.5.0",
+    "graphql-shield": "^7.6.2",
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^3.0.1",
     "sequelize": "^6.23.2"
