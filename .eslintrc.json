@@ -1,11 +1,13 @@
 {
     "env": {
-        "browser": true,
-        "es2021": true
+        "es2021": true,
+        "node": true
     },
     "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "google",
+        "prettier"
     ],
     "overrides": [
     ],
@@ -15,7 +17,8 @@
         "sourceType": "module"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "prettier"
     ],
     "rules": {
         "indent": [
@@ -38,6 +41,7 @@
             "error",
             "always"
         ],
-        "no-trailing-spaces": "error"
+        "no-trailing-spaces": "error",
+        "prettier/prettier": "error"
     }
 }
