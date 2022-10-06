@@ -36,8 +36,8 @@ export const createApolloServer = (
                 }
             },
             process.env.NODE_ENV === "production"
-                ? ApolloServerPluginLandingPageDisabled() // eslint-disable-line new-cap
-                : ApolloServerPluginLandingPageLocalDefault({ embed: true }) // eslint-disable-line new-cap
+                ? ApolloServerPluginLandingPageDisabled() // eslint-disable-line
+                : ApolloServerPluginLandingPageLocalDefault({ embed: true }) // eslint-disable-line
         ]
     });
 };
