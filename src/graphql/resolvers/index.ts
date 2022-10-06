@@ -3,9 +3,9 @@ import * as Mutations from "./Mutations/index";
 
 export const resolvers = {
     Query: {
-        ...Queries,
+        ...Queries
     },
     Mutation: {
-        ...Mutations,
-    },
+        ...Mutations
+    }
 };
