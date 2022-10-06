@@ -18,9 +18,9 @@
   "author": "Felix Wohlfrom",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@types/node": "^18.7.23",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
+    "@types/node": "^18.8.2",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
     "eslint": "^8.24.0",
     "eslint-config-google": "0.13.0",
     "eslint-config-prettier": "^6.0.0",
@@ -41,6 +41,6 @@
     "graphql-shield": "^7.6.2",
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^3.0.1",
-    "sequelize": "^6.23.2"
+    "sequelize": "^6.24.0"
   }
 }
