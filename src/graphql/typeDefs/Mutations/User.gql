@@ -1,0 +1,20 @@
+type LoginResult {
+  token: String!
+}
+
+input userInput {
+  username: String!
+  password: String!
+}
+
+input updateUserInput {
+  username: String!
+  password: String
+}
+
+type Mutation {
+  register(input: userInput): Status
+  login(input: userInput): LoginResult
+  logout: Status
+  updateUser(input: updateUserInput): Status
+}

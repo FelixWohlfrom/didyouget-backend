@@ -1,6 +1,6 @@
-import { UserModel } from "../../../db/model/index";
+import { User } from "../../../db/model/index";
 
-export const getUsers = async (_parent: any, args: any, _context: any) => {
-    const result = await UserModel.findAll();
+export const getUsers = async () => {
+    const result = await User.findAll();
     return result;
 };
