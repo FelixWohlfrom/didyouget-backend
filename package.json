@@ -38,7 +38,7 @@
     "apollo-server-fastify": "^3.10.3",
     "argon2": "^0.29.1",
     "dotenv": "^16.0.3",
-    "graphql-middleware": "^6.1.32",
+    "graphql-middleware": "^6.1.33",
     "graphql-shield": "^7.6.2",
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^3.0.1",
