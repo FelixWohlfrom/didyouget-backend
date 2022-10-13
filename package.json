@@ -19,7 +19,7 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.9",
-    "@types/node": "^18.8.2",
+    "@types/node": "^18.8.5",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "eslint": "^8.25.0",
