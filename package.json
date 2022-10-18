@@ -36,7 +36,7 @@
     "@graphql-tools/schema": "^9.0.4",
     "apollo-server-core": "^3.10.2",
     "apollo-server-fastify": "^3.10.3",
-    "argon2": "^0.29.1",
+    "argon2": "^0.30.0",
     "dotenv": "^16.0.3",
     "graphql-middleware": "^6.1.33",
     "graphql-shield": "^7.6.3",
