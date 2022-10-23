@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { envHandler } from "../envHandler";
-import { CustomJwtPayload } from "./model";
+import { DidYouGetLoginData } from "./model";
 
-export const signToken = (data: CustomJwtPayload) => {
+export const signToken = (data: DidYouGetLoginData) => {
     return jwt.sign(data, envHandler.get("JWT_SECRET"));
 };

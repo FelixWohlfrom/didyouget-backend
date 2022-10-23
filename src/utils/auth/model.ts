@@ -1,6 +1,6 @@
 import * as jwt from "jsonwebtoken";
 
-export interface CustomJwtPayload extends jwt.JwtPayload {
+export interface DidYouGetLoginData extends jwt.JwtPayload {
     userid: number;
     deviceToken: string;
 }

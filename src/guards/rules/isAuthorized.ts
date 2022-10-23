@@ -1,14 +1,14 @@
 import { rule } from "graphql-shield";
 import { Device } from "../../db/model";
-import { CustomJwtPayload } from "../../utils/auth/model";
+import { DidYouGetLoginData } from "../../utils/auth/model";
 
 export const isAuthorized = rule()(
     async (
         _parent: object,
         _args: object,
-        context: { auth: CustomJwtPayload }
+        context: { auth: DidYouGetLoginData | undefined }
     ) => {
-        if (!context.auth.deviceToken) {
+        if (!(context.auth && context.auth.deviceToken)) {
             return false;
         }
 
