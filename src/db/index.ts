@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+import { Dialect, Sequelize } from "sequelize";
 import dbConfig from "./config";
 
 export const databaseConnection = new Sequelize(
@@ -8,7 +8,8 @@ export const databaseConnection = new Sequelize(
     {
         host: dbConfig.DB_HOST,
         port: dbConfig.DB_PORT,
-        dialect: "mariadb",
+        dialect: dbConfig.DB_DIALECT as Dialect,
+        storage: "data/database.sqlite", // This will only be used if the sqlite dialect is used
         define: {
             timestamps: false
         }
