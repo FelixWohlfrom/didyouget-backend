@@ -1,5 +1,5 @@
 import { User } from "../../../db/model";
-import { hashPassword } from "../../../utils/index";
+import { hashPassword } from "../../../utils/auth/hashPassword";
 
 export const register = async (
     _parent: object,
