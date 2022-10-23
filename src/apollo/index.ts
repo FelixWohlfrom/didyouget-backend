@@ -7,7 +7,7 @@ import {
 import { applyMiddleware } from "graphql-middleware";
 import { GraphQLSchema } from "graphql";
 import { FastifyInstance } from "fastify";
-import { getAuthData } from "../utils";
+import { getAuthData } from "../utils/auth/getAuthData";
 import { envHandler } from "../utils/envHandler";
 
 export const createApolloServer = (
