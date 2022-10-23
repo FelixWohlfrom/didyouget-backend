@@ -4,6 +4,7 @@
   "description": "Backend service for the 'didyouget' shopping list app",
   "main": "src/index.ts",
   "scripts": {
+    "build": "tsc",
     "start": "ts-node ./src/index.ts",
     "dev": "nodemon ./src/index.ts --ext ts,gql",
     "lint": "eslint src --ext .ts",
@@ -42,6 +43,7 @@
     "graphql-shield": "^7.6.3",
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^3.0.1",
+    "sqlite3": "^5.1.2",
     "sequelize": "^6.25.2"
   }
 }
