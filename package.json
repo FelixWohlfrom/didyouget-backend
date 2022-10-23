@@ -4,6 +4,7 @@
   "description": "Backend service for the 'didyouget' shopping list app",
   "main": "src/index.ts",
   "scripts": {
+    "build": "tsc",
     "start": "ts-node ./src/index.ts",
     "dev": "nodemon ./src/index.ts --ext ts,gql",
     "lint": "eslint src --ext .ts",
