@@ -1,10 +1,9 @@
 /**
- * A helper class to read environment variables and return a default
- * value if not set. If no default value is given, an error is thrown.
+ * A helper class to make handling with the environment easier.
  *
  * @class
  */
-class EnvReader {
+class EnvHandler {
     /**
      * Will return the given environment variable. If not set, default value will be returned.
      * If no default value is given, an error is thrown.
@@ -21,6 +20,15 @@ class EnvReader {
             "Please define a value for environment variable " + envVar
         );
     }
+
+    /**
+     * Will return true if we are currently executed in an development instance.
+     *
+     * @return {boolean} True if we are executed in an development instance.
+     */
+    isDevelopmentInstance(): boolean {
+        return this.get("NODE_ENV", "development") == "development";
+    }
 }
 
-export const envReader = new EnvReader();
+export const envHandler = new EnvHandler();

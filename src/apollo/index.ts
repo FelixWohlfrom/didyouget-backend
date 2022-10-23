@@ -8,6 +8,7 @@ import { applyMiddleware } from "graphql-middleware";
 import { GraphQLSchema } from "graphql";
 import { FastifyInstance } from "fastify";
 import { getAuthData } from "../utils";
+import { envHandler } from "../utils/envHandler";
 
 export const createApolloServer = (
     midlewares: [object],
@@ -35,9 +36,9 @@ export const createApolloServer = (
                     };
                 }
             },
-            process.env.NODE_ENV === "production"
-                ? ApolloServerPluginLandingPageDisabled() // eslint-disable-line new-cap
-                : ApolloServerPluginLandingPageLocalDefault({ embed: true }) // eslint-disable-line new-cap
+            envHandler.isDevelopmentInstance()
+                ? ApolloServerPluginLandingPageLocalDefault({ embed: true }) // eslint-disable-line new-cap
+                : ApolloServerPluginLandingPageDisabled() // eslint-disable-line new-cap
         ]
     });
 };

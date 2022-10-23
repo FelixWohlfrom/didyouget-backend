@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-import { envReader } from "../envReader";
+import { envHandler } from "../envHandler";
 import { CustomJwtPayload } from "./model";
 
 export const verifyToken = (token: string) => {
-    return <CustomJwtPayload>jwt.verify(token, envReader.get("JWT_SECRET"));
+    return <CustomJwtPayload>jwt.verify(token, envHandler.get("JWT_SECRET"));
 };
