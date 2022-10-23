@@ -1,4 +1,5 @@
 import { shield } from "graphql-shield";
+import { envHandler } from "../utils/envHandler";
 
 import { isAuthorized } from "./rules/index";
 
@@ -14,7 +15,6 @@ export const permissions = shield(
         }
     },
     {
-        allowExternalErrors:
-            !process.env.NODE_ENV || process.env.NODE_ENV == "development"
+        allowExternalErrors: envHandler.isDevelopmentInstance()
     }
 );

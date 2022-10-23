@@ -1,9 +1,9 @@
-import { envReader } from "../utils/envReader";
+import { envHandler } from "../utils/envHandler";
 
 export default {
-    DB_NAME: envReader.get("DB_NAME"),
-    DB_USER: envReader.get("DB_USER"),
-    DB_PASS: envReader.get("DB_PASS"),
-    DB_HOST: envReader.get("DB_HOST"),
-    DB_PORT: parseInt(envReader.get("DB_PORT", "3306"))
+    DB_NAME: envHandler.get("DB_NAME"),
+    DB_USER: envHandler.get("DB_USER"),
+    DB_PASS: envHandler.get("DB_PASS"),
+    DB_HOST: envHandler.get("DB_HOST"),
+    DB_PORT: parseInt(envHandler.get("DB_PORT", "3306"))
 };
