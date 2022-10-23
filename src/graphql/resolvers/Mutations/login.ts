@@ -1,7 +1,8 @@
 import crypto from "crypto";
 import { Device, User } from "../../../db/model/index";
 import { CustomJwtPayload } from "../../../utils/auth/model";
-import { signToken, verifyPassword } from "../../../utils/index";
+import { signToken } from "../../../utils/auth/signToken";
+import { verifyPassword } from "../../../utils/auth/verifyPassword";
 
 export const login = async (
     _parent: object,

@@ -1,6 +1,6 @@
 import { User } from "../../../db/model/index";
+import { hashPassword } from "../../../utils/auth/hashPassword";
 import { CustomJwtPayload } from "../../../utils/auth/model";
-import { hashPassword } from "../../../utils/hashPassword";
 
 type UpdateValues = {
     username: string;
