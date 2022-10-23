@@ -36,7 +36,7 @@ Device.init(
         },
         loggedin: {
             type: DataTypes.BOOLEAN,
-            defaultValue: 0,
+            defaultValue: false,
             allowNull: false
         }
     },
