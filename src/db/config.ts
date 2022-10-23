@@ -5,5 +5,6 @@ export default {
     DB_USER: envHandler.get("DB_USER"),
     DB_PASS: envHandler.get("DB_PASS"),
     DB_HOST: envHandler.get("DB_HOST"),
+    DB_DIALECT: envHandler.get("DB_DIALECT", "sqlite"),
     DB_PORT: parseInt(envHandler.get("DB_PORT", "3306"))
 };
