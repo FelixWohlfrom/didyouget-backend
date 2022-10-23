@@ -1,13 +1,13 @@
 import crypto from "crypto";
 import { Device, User } from "../../../db/model/index";
-import { CustomJwtPayload } from "../../../utils/auth/model";
+import { DidYouGetLoginData } from "../../../utils/auth/model";
 import { signToken } from "../../../utils/auth/signToken";
 import { verifyPassword } from "../../../utils/auth/verifyPassword";
 
 export const login = async (
     _parent: object,
     args: { input: { username: string; password: string } },
-    context: { auth: CustomJwtPayload }
+    context: { auth: DidYouGetLoginData }
 ) => {
     const { username, password } = args.input;
 

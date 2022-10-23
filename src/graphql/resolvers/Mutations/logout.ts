@@ -1,10 +1,10 @@
 import { Device } from "../../../db/model";
-import { CustomJwtPayload } from "../../../utils/auth/model";
+import { DidYouGetLoginData } from "../../../utils/auth/model";
 
 export const logout = async (
     _parent: object,
     _args: object,
-    context: { auth: CustomJwtPayload }
+    context: { auth: DidYouGetLoginData }
 ) => {
     if (context.auth.deviceToken) {
         await Device.update(

@@ -1,6 +1,6 @@
 import { User } from "../../../db/model/index";
 import { hashPassword } from "../../../utils/auth/hashPassword";
-import { CustomJwtPayload } from "../../../utils/auth/model";
+import { DidYouGetLoginData } from "../../../utils/auth/model";
 
 type UpdateValues = {
     username: string;
@@ -10,7 +10,7 @@ type UpdateValues = {
 export const updateUser = async (
     _parent: object,
     args: { input: { username: string; password: string | undefined } },
-    context: { auth: CustomJwtPayload }
+    context: { auth: DidYouGetLoginData }
 ) => {
     const { username, password } = args.input;
 
