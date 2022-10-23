@@ -1,8 +1,0 @@
-input addUserInput {
-    name: String!
-    password: String!
-}
-
-type Mutation {
-    addUser(input: addUserInput): User
-}
