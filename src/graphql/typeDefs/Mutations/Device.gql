@@ -1,0 +1,7 @@
+input DeviceInput {
+    newDeviceName: String!
+}
+
+type Mutation {
+    updateDeviceName(input: DeviceInput): Status
+}
