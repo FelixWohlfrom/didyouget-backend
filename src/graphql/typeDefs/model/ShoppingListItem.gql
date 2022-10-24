@@ -1,0 +1,4 @@
+type ShoppingListItem {
+    id: ID,
+    value: String
+}
