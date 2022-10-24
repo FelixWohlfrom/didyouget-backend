@@ -1,0 +1,8 @@
+input addShoppingListItemInput {
+    shoppingListId: ID!
+    value: String!
+}
+
+type Mutation {
+    addShoppingListItem(input: addShoppingListItemInput): ShoppingListItem
+}

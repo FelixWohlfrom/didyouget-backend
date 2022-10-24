@@ -1,0 +1,7 @@
+input addShoppingListInput {
+    name: String!
+}
+
+type Mutation {
+    addShoppingList(input: addShoppingListInput): ShoppingList
+}

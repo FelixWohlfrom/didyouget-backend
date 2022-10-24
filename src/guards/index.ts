@@ -10,6 +10,11 @@ export const permissions = shield(
             getUser: isAuthorized
         },
         Mutation: {
+            // ShoppingList
+            addShoppingList: isAuthorized,
+            // ShoppingListItem
+            addShoppingListItem: isAuthorized,
+            // User
             updateUser: isAuthorized,
             logout: isAuthorized
         }

@@ -3,29 +3,30 @@ import {
     Model,
     InferAttributes,
     InferCreationAttributes,
-    CreationOptional,
-    NonAttribute
+    ForeignKey,
+    CreationOptional
 } from "sequelize";
 
 import { databaseConnection } from "../index";
-import { Device } from "./Device";
 import { ShoppingList } from "./Shoppinglist";
 
 /**
- * Describes a user
+ * Describes an item of a shopping list
  */
-class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+class ListItem extends Model<
+    InferAttributes<ListItem>,
+    InferCreationAttributes<ListItem>
+> {
     // id can be undefined during creation when using `autoIncrement`
     declare id: CreationOptional<number>;
 
-    declare username: string;
-    declare password: string;
+    declare value: string;
+    declare bought: CreationOptional<boolean>;
 
-    declare devices: NonAttribute<Device[]>;
-    declare shoppingLists: NonAttribute<ShoppingList[]>;
+    declare listId: ForeignKey<number>;
 }
 
-User.init(
+ListItem.init(
     {
         id: {
             type: DataTypes.INTEGER,
@@ -33,25 +34,24 @@ User.init(
             autoIncrement: true,
             allowNull: false
         },
-        username: {
+        value: {
             type: DataTypes.STRING,
-            unique: true,
+            defaultValue: "",
             allowNull: false
         },
-        password: {
-            type: DataTypes.STRING,
+        bought: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
             allowNull: false
         }
     },
     {
         sequelize: databaseConnection,
         timestamps: false,
-        modelName: "user"
+        modelName: "listItem"
     }
 );
 
-User.hasMany(Device);
-User.hasMany(ShoppingList, { foreignKey: "owner" });
-ShoppingList.belongsToMany(User, { through: "sharedWith" });
+ListItem.belongsTo(ShoppingList, { as: "listId" });
 
-export { User };
+export { ListItem };
