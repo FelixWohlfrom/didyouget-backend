@@ -1,2 +1,5 @@
 # didyouget-backend
+
+[![Build](https://github.com/FelixWohlfrom/didyouget-backend/actions/workflows/build.yaml/badge.svg?event=push)](https://github.com/FelixWohlfrom/didyouget-backend/actions/workflows/build.yaml) [![codecov](https://codecov.io/gh/FelixWohlfrom/didyouget-backend/branch/main/graph/badge.svg?token=0E8911CB53)](https://codecov.io/gh/FelixWohlfrom/didyouget-backend) [![CodeQL](https://github.com/FelixWohlfrom/didyouget-backend/actions/workflows/codeql-analysis.yml/badge.svg?event=push)](https://github.com/FelixWohlfrom/didyouget-backend/actions/workflows/codeql-analysis.yml) [![ESLint](https://github.com/FelixWohlfrom/didyouget-backend/actions/workflows/eslint.yml/badge.svg?event=push)](https://github.com/FelixWohlfrom/didyouget-backend/actions/workflows/eslint.yml) [![GitHub license](https://img.shields.io/github/license/FelixWohlfrom/didyouget-backend)](https://github.com/FelixWohlfrom/didyouget-backend/blob/main/LICENSE)
+
 The backend for a small colaborative shopping list app.
