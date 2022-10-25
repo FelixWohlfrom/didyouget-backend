@@ -3,12 +3,15 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import { startApolloServer } from "./server";
+import { envHandler } from "./utils/envHandler";
 
 const boostrap = async () => {
+    const port = Number.parseInt(envHandler.get("PORT", "4000"));
+
     try {
-        await startApolloServer();
+        await startApolloServer(port);
         console.log(
-            "[Apollo Server]: Up and Running at http://localhost:4000/graphql 🚀"
+            `[Apollo Server]: Up and Running at http://localhost:${port}/graphql 🚀`
         );
     } catch (error) {
         console.log("[Apollo Server]: Process exiting ...");
