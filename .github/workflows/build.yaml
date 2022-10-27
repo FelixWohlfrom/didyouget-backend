@@ -16,7 +16,7 @@ jobs:
         node-version: [16.x, 18.x]
 
     env:
-      NODE: {{ matrix.node-version }}
+      NODE: ${{ matrix.node-version }}
 
     steps:
     - uses: actions/checkout@v3
