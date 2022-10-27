@@ -4,7 +4,40 @@ import request from "supertest";
 
 import { startApolloServer } from "../src/server";
 
+// The user data for our testuser. Will be used in most of the testcases
+const userData = {
+    username: "TestUser",
+    password: "1234"
+};
+
+// The test server instance
 let server: Server<typeof IncomingMessage, typeof ServerResponse>;
+
+// The authentication token
+let authToken: string | undefined;
+
+/**
+ * Will login using the predefined user authentication.
+ *
+ * @param {boolean} force Force login, even if we are already logged in
+ */
+async function login(force = false) {
+    if (!authToken || force) {
+        const response = await runGraphQlQuery({
+            query: `mutation login($userData: userInput!) {
+                login(input: $userData) {
+                    token
+                }
+            }`,
+            variables: { userData: userData }
+        });
+
+        expect(response.body.errors).toBeUndefined();
+        expect(response.body.data?.login.token).not.toBe("");
+
+        authToken = response.body.data.login.token;
+    }
+}
 
 /**
  * Executes a query on the test server.
@@ -38,15 +71,15 @@ describe("user related graphql tests", () => {
                     success
                 }
             }`,
-            variables: {
-                userData: {
-                    username: "TestUser",
-                    password: "1234"
-                }
-            }
+            variables: { userData: userData }
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.register.success).toBeTruthy();
+    });
+
+    it("should login successfully", async () => {
+        await login();
+        expect(authToken).toBeTruthy();
     });
 });
