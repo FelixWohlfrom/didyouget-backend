@@ -16,7 +16,7 @@ jobs:
         node-version: [16.x, 18.x]
 
     env:
-      NODE: ${{ matrix.node-version }}
+      NODE_VERSION: ${{ matrix.node-version }}
 
     steps:
     - uses: actions/checkout@v3
@@ -35,4 +35,4 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
-        env_vars: NODE
+        env_vars: NODE_VERSION
