@@ -48,9 +48,13 @@ async function login(force = false) {
  */
 function runGraphQlQuery(queryData: object): request.Test {
     // send our request to the url of the test server
-    return request(`http://localhost:${(server.address() as AddressInfo).port}`)
-        .post("/graphql")
-        .send(queryData);
+    const req = request(
+        `http://localhost:${(server.address() as AddressInfo).port}`
+    ).post("/graphql");
+    if (authToken !== undefined) {
+        req.set("Authorization", `Bearer ${authToken}`);
+    }
+    return req.send(queryData);
 }
 
 describe("user related graphql tests", () => {
@@ -95,5 +99,20 @@ describe("user related graphql tests", () => {
     it("should login successfully", async () => {
         await login();
         expect(authToken).toBeTruthy();
+    });
+
+    it("should logout successfully", async () => {
+        await login();
+
+        const response = await runGraphQlQuery({
+            query: `mutation logout {
+                logout {
+                    success
+                }
+            }`
+        });
+        expect(response.error).toBeFalsy();
+        expect(response.body.data?.logout.success).toBe(true);
+        authToken = undefined;
     });
 });
