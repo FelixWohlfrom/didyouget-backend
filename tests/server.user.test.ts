@@ -78,6 +78,20 @@ describe("user related graphql tests", () => {
         expect(response.body.data?.register.success).toBeTruthy();
     });
 
+    it("should be not possible to register the same user again", async () => {
+        const response = await runGraphQlQuery({
+            query: `mutation registerUser($userData: userInput!) {
+                register(input: $userData) {
+                    success
+                }
+            }`,
+            variables: { userData: userData }
+        });
+
+        expect(response.body.errors).toBeUndefined();
+        expect(response.body.data?.register.success).toBe(false);
+    });
+
     it("should login successfully", async () => {
         await login();
         expect(authToken).toBeTruthy();

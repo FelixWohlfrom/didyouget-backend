@@ -9,12 +9,17 @@ export const register = async (
 
     const hashedPassword = await hashPassword(password);
 
-    await User.create({
-        username: username,
-        password: hashedPassword
-    });
+    let success = true;
+    try {
+        await User.create({
+            username: username,
+            password: hashedPassword
+        });
+    } catch {
+        success = false;
+    }
 
     return {
-        success: true
+        success: success
     };
 };
