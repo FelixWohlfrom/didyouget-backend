@@ -43,6 +43,8 @@ Device.init(
     {
         sequelize: databaseConnection,
         timestamps: true,
+        createdAt: "firstSeen",
+        updatedAt: "lastSeen",
         modelName: "device"
     }
 );
