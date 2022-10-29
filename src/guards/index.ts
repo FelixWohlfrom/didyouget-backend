@@ -6,8 +6,9 @@ import { isAuthorized } from "./rules/index";
 export const permissions = shield(
     {
         Query: {
-            getUsers: isAuthorized,
-            getUser: isAuthorized
+            // User
+            user: isAuthorized,
+            users: isAuthorized
         },
         Mutation: {
             // Device
