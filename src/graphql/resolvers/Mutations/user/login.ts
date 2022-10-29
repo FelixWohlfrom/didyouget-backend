@@ -27,10 +27,7 @@ export const login = async (
     const [device] = await Device.findOrCreate({
         where: {
             userId: user.id,
-            token:
-                context.auth && context.auth.deviceToken
-                    ? context.auth.deviceToken
-                    : ""
+            token: context.auth?.deviceToken ? context.auth.deviceToken : ""
         }
     });
     device.token = crypto.randomUUID();
