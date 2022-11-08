@@ -3,10 +3,12 @@ import {
     Model,
     InferAttributes,
     InferCreationAttributes,
-    ForeignKey
+    ForeignKey,
+    NonAttribute
 } from "sequelize";
 
 import { databaseConnection } from "../index";
+import { ListItem } from "./ListItem";
 
 /**
  * Describes a shopping list
@@ -18,6 +20,8 @@ class ShoppingList extends Model<
     declare name: string;
 
     declare owner: ForeignKey<number>;
+
+    declare listItems: NonAttribute<ListItem[]>;
 }
 
 ShoppingList.init(
@@ -34,5 +38,7 @@ ShoppingList.init(
         modelName: "list"
     }
 );
+
+ShoppingList.hasMany(ListItem, { foreignKey: "listId" });
 
 export { ShoppingList };

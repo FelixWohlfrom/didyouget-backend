@@ -8,7 +8,6 @@ import {
 } from "sequelize";
 
 import { databaseConnection } from "../index";
-import { ShoppingList } from "./Shoppinglist";
 
 /**
  * Describes an item of a shopping list
@@ -51,7 +50,5 @@ ListItem.init(
         modelName: "listItem"
     }
 );
-
-ListItem.belongsTo(ShoppingList, { as: "listId" });
 
 export { ListItem };

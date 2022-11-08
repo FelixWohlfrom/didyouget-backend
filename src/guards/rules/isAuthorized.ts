@@ -1,5 +1,5 @@
 import { rule } from "graphql-shield";
-import { Device } from "../../db/model";
+import { Device } from "../../db/model/Device";
 import { DidYouGetLoginData } from "../../utils/auth/model";
 
 export const isAuthorized = rule()(

@@ -1,2 +1,3 @@
-export * from "./getUser";
-export * from "./getUsers";
+export * from "./device/index";
+export * from "./shoppingList/index";
+export * from "./user/index";

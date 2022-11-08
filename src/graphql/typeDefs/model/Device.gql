@@ -1,0 +1,6 @@
+type Device {
+    name: String!,
+    loggedin: Boolean!,
+    firstSeen: DateTime!,
+    lastSeen: DateTime!
+}

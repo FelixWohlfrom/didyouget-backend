@@ -1,13 +1,18 @@
 import { shield } from "graphql-shield";
 import { envHandler } from "../utils/envHandler";
 
-import { isAuthorized } from "./rules/index";
+import { isAuthorized } from "./rules/isAuthorized";
 
 export const permissions = shield(
     {
         Query: {
-            getUsers: isAuthorized,
-            getUser: isAuthorized
+            // Device
+            devices: isAuthorized,
+            // ShoppingList
+            shoppingLists: isAuthorized,
+            // User
+            user: isAuthorized,
+            users: isAuthorized
         },
         Mutation: {
             // Device
