@@ -12,6 +12,8 @@ export const addShoppingList = async (
         name: name,
         owner: context.auth.userid
     });
+    // Queries will also return an empty list on no items.
+    result.listItems = [];
 
     return result;
 };

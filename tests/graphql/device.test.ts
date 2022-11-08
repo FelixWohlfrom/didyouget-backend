@@ -4,25 +4,13 @@ import {
     stopServer,
     login,
     runGraphQlQuery,
-    userData
+    registerUser
 } from "./common";
 
 // before the tests we spin up a new Apollo Server
 beforeAll(async () => {
     await initServer();
-
-    // Make sure we have our test user in the db
-    const response = await runGraphQlQuery({
-        query: `mutation registerUser($userData: userInput!) {
-            register(input: $userData) {
-                success
-            }
-        }`,
-        variables: { userData: userData }
-    });
-
-    expect(response.body.errors).toBeUndefined();
-    expect(response.body.data?.register.success).toBeTruthy();
+    await registerUser();
 });
 
 // after the tests we'll stop the server

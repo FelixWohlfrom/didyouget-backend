@@ -1,6 +1,6 @@
 type ShoppingList {
-    id: ID,
-    owner: ID,
-    name: String,
-    items: [ShoppingListItem]
+    id: ID!,
+    owner: ID!,
+    name: String!,
+    listItems: [ShoppingListItem]
 }

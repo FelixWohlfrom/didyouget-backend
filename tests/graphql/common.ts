@@ -30,6 +30,24 @@ function setAuthToken(newToken: string | undefined) {
 }
 
 /**
+ * Will register the predefined user.
+ */
+async function registerUser() {
+    // Make sure we have our test user in the db
+    const response = await runGraphQlQuery({
+        query: `mutation registerUser($userData: userInput!) {
+            register(input: $userData) {
+                success
+            }
+        }`,
+        variables: { userData: userData }
+    });
+
+    expect(response.body.errors).toBeUndefined();
+    expect(response.body.data?.register.success).toBeTruthy();
+}
+
+/**
  * Will login using the predefined user authentication.
  *
  * @param {boolean} force Force login, even if we are already logged in
@@ -90,6 +108,7 @@ export {
     setAuthToken,
     initServer,
     stopServer,
+    registerUser,
     login,
     runGraphQlQuery
 };

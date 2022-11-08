@@ -8,6 +8,8 @@ export const permissions = shield(
         Query: {
             // Device
             devices: isAuthorized,
+            // ShoppingList
+            shoppingLists: isAuthorized,
             // User
             user: isAuthorized,
             users: isAuthorized
