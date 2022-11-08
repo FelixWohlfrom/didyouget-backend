@@ -39,7 +39,7 @@ describe("an unauthorized user", () => {
 
     it("should not be able to update the device name", async () => {
         const response = await runGraphQlQuery({
-            query: `mutation UpdateDeviceName($deviceInput: DeviceInput!) {
+            query: `mutation UpdateDeviceName($deviceInput: deviceInput!) {
                 updateDeviceName(input: $deviceInput) {
                     success
                 }
@@ -76,7 +76,7 @@ describe("an authorized user", () => {
     it("should be able to update the device name", async () => {
         // First update the device name
         const responseUpdate = await runGraphQlQuery({
-            query: `mutation UpdateDeviceName($deviceInput: DeviceInput!) {
+            query: `mutation UpdateDeviceName($deviceInput: deviceInput!) {
                 updateDeviceName(input: $deviceInput) {
                     success
                 }
