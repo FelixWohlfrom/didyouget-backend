@@ -17,7 +17,7 @@ class EnvHandler {
             return process.env[envVar] ?? defaultValue ?? "";
         }
         throw new Error(
-            "Please define a value for environment variable " + envVar
+            "Please define a default value for environment variable " + envVar
         );
     }
 
