@@ -19,7 +19,7 @@
   "author": "Felix Wohlfrom",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@types/jest": "29.2.2",
+    "@types/jest": "29.2.3",
     "@types/jsonwebtoken": "8.5.9",
     "@types/node": "18.11.9",
     "@types/supertest": "2.0.12",
