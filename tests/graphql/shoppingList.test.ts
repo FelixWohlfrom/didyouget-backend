@@ -7,7 +7,8 @@ import {
     stopServer,
     login,
     runGraphQlQuery,
-    registerUser
+    registerUser,
+    addShoppingList
 } from "./common";
 
 // before the tests we spin up a new Apollo Server
@@ -72,16 +73,7 @@ describe("an authorized user", () => {
 
         // Make sure we have our test list in the db
         // Only check for absence of errors, more detailed checks are done in a separate testcase
-        const response = await runGraphQlQuery({
-            query: `mutation AddShoppingList($addShoppingListInput: addShoppingListInput!) {
-                addShoppingList(input: $addShoppingListInput) {
-                    id
-                }
-            }`,
-            variables: { addShoppingListInput: { name: "testList" } }
-        });
-
-        expect(response.body.errors).toBeUndefined();
+        addShoppingList();
     });
 
     it("should be able to query all shoppinglists connected to the current user", async () => {
