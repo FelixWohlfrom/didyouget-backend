@@ -79,6 +79,20 @@ describe("an unauthorized user", () => {
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
+
+    it("should not be able to update user data", async () => {
+        const response = await runGraphQlQuery({
+            query: `mutation UpdateUser($updateUserInput: updateUserInput!) {
+                updateUser(input: $updateUserInput) {
+                    success
+                }
+            }`,
+            variables: {
+                updateUserInput: { username: "newUser" }
+            }
+        });
+        expect(response.body.errors[0].message).toBe("Not Authorised!");
+    });
 });
 
 describe("an authorized user", () => {
@@ -148,5 +162,64 @@ describe("an authorized user", () => {
             }`
         });
         expect(response.body.data?.user).toBeNull();
+    });
+
+    it("should be able to update the username", async () => {
+        // Update username
+        const response = await runGraphQlQuery({
+            query: `mutation UpdateUser($updateUserInput: updateUserInput!) {
+                updateUser(input: $updateUserInput) {
+                    success
+                }
+            }`,
+            variables: {
+                updateUserInput: { username: "newUser" }
+            }
+        });
+        expect(response.body.data?.errors).toBeUndefined();
+        expect(response.body.data?.updateUser.success).toBe(true);
+
+        // Verify that the user data is really updated
+        const checkResponse = await runGraphQlQuery({
+            query: `query User {
+                user {
+                    id
+                    username
+                }
+            }`
+        });
+        expect(checkResponse.body.data?.user.id).toBe("1");
+        expect(checkResponse.body.data?.user.username).toBe("newUser");
+    });
+
+    it("should not be able to login after password update", async () => {
+        // Update the password
+        const response = await runGraphQlQuery({
+            query: `mutation UpdateUser($updateUserInput: updateUserInput!) {
+                updateUser(input: $updateUserInput) {
+                    success
+                }
+            }`,
+            variables: {
+                updateUserInput: {
+                    username: userData.username,
+                    password: "secureNewPassword"
+                }
+            }
+        });
+        expect(response.body.data?.errors).toBeUndefined();
+        expect(response.body.data?.updateUser.success).toBe(true);
+
+        // Login again - this should fail
+        const loginResponse = await runGraphQlQuery({
+            query: `mutation login($userData: userInput!) {
+                 login(input: $userData) {
+                     token
+                 }
+             }`,
+            variables: { userData: userData }
+        });
+
+        expect(loginResponse.body.errors[0].message).toBe("Not Authorised!");
     });
 });
