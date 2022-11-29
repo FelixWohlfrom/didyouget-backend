@@ -1,4 +1,5 @@
 type ShoppingListItem {
     id: ID!,
-    value: String!
+    value: String!,
+    bought: Boolean!
 }

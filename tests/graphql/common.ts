@@ -48,6 +48,23 @@ async function registerUser() {
 }
 
 /**
+ * Will add a predefined shopping list.
+ */
+async function addShoppingList() {
+    // Make sure we have our test list in the db
+    const response = await runGraphQlQuery({
+        query: `mutation AddShoppingList($addShoppingListInput: addShoppingListInput!) {
+            addShoppingList(input: $addShoppingListInput) {
+                id
+            }
+        }`,
+        variables: { addShoppingListInput: { name: "testList" } }
+    });
+
+    expect(response.body.errors).toBeUndefined();
+}
+
+/**
  * Will login using the predefined user authentication.
  *
  * @param {boolean} force Force login, even if we are already logged in
@@ -110,5 +127,6 @@ export {
     stopServer,
     registerUser,
     login,
+    addShoppingList,
     runGraphQlQuery
 };
