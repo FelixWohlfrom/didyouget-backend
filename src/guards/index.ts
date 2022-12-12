@@ -21,6 +21,7 @@ export const permissions = shield(
             addShoppingList: isAuthorized,
             // ShoppingListItem
             addShoppingListItem: isAuthorized,
+            markShoppingListItemBought: isAuthorized,
             // User
             updateUser: isAuthorized,
             logout: isAuthorized
