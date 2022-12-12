@@ -30,7 +30,7 @@ describe("an unauthorized user", () => {
                     success
                 }
             }`,
-            variables: { userData: userData }
+            variables: { userData: userData[0] }
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -44,7 +44,7 @@ describe("an unauthorized user", () => {
                     success
                 }
             }`,
-            variables: { userData: userData }
+            variables: { userData: userData[0] }
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -202,7 +202,7 @@ describe("an authorized user", () => {
             }`,
             variables: {
                 updateUserInput: {
-                    username: userData.username,
+                    username: userData[0].username,
                     password: "secureNewPassword"
                 }
             }
@@ -217,7 +217,7 @@ describe("an authorized user", () => {
                      token
                  }
              }`,
-            variables: { userData: userData }
+            variables: { userData: userData[0] }
         });
 
         expect(loginResponse.body.errors[0].message).toBe("Not Authorised!");
