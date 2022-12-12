@@ -8,11 +8,17 @@ import request from "supertest";
 
 import { startApolloServer } from "../../src/server";
 
-// The user data for our testuser. Will be used in most of the testcases
-const userData = {
-    username: "TestUser",
-    password: "1234"
-};
+// The user data for our testusers. Will be used in most of the testcases
+const userData = [
+    {
+        username: "TestUser",
+        password: "1234"
+    },
+    {
+        username: "TestUser2",
+        password: "5678"
+    }
+];
 
 // The test server instance
 let server: Server<typeof IncomingMessage, typeof ServerResponse>;
@@ -31,8 +37,10 @@ function setAuthToken(newToken: string | undefined) {
 
 /**
  * Will register the predefined user.
+ *
+ * @param {int} credentialsId The credentials to use for log in. Default 0.
  */
-async function registerUser() {
+async function registerUser(credentialsId = 0) {
     // Make sure we have our test user in the db
     const response = await runGraphQlQuery({
         query: `mutation registerUser($userData: userInput!) {
@@ -40,7 +48,7 @@ async function registerUser() {
                 success
             }
         }`,
-        variables: { userData: userData }
+        variables: { userData: userData[credentialsId] }
     });
 
     expect(response.body.errors).toBeUndefined();
@@ -67,9 +75,10 @@ async function addShoppingList() {
 /**
  * Will login using the predefined user authentication.
  *
- * @param {boolean} force Force login, even if we are already logged in
+ * @param {int} credentialsId The credentials to use for log in. Default 0.
+ * @param {boolean} force Force login, even if we are already logged in.
  */
-async function login(force = false) {
+async function login(credentialsId = 0, force = false) {
     if (!authToken || force) {
         const response = await runGraphQlQuery({
             query: `mutation login($userData: userInput!) {
@@ -77,7 +86,7 @@ async function login(force = false) {
                      token
                  }
              }`,
-            variables: { userData: userData }
+            variables: { userData: userData[credentialsId] }
         });
 
         expect(response.body.errors).toBeUndefined();

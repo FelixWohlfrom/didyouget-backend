@@ -164,4 +164,76 @@ describe("an authorized user", () => {
             }
         ]);
     });
+
+    it("should not be able to add items to non existing lists", async () => {
+        // Add a new shopping list item to a non existing list
+        const response = await runGraphQlQuery({
+            query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
+                addShoppingListItem(input: $addShoppingListItemInput) {
+                    id
+                    value
+                    bought
+                }
+            }`,
+            variables: {
+                addShoppingListItemInput: {
+                    shoppingListId: 2,
+                    value: "secondItem"
+                }
+            }
+        });
+
+        const newItem = response.body.data?.addShoppingListItem;
+        expect(response.body.errors).toBeUndefined();
+        expect(newItem).toBeNull();
+    });
+
+    it("should be able to add a new shopping list item only to an own list", async () => {
+        // Add a new shopping list for second user
+        await registerUser(1);
+        await login(1, true);
+        await addShoppingList();
+
+        // Login again as first user
+        await login(0, true);
+
+        // Add a new shopping list item to list of second user
+        const response = await runGraphQlQuery({
+            query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
+                addShoppingListItem(input: $addShoppingListItemInput) {
+                    id
+                    value
+                    bought
+                }
+            }`,
+            variables: {
+                addShoppingListItemInput: {
+                    shoppingListId: 2,
+                    value: "secondItem"
+                }
+            }
+        });
+
+        const newItem = response.body.data?.addShoppingListItem;
+        expect(response.body.errors).toBeUndefined();
+        expect(newItem).toBeNull();
+
+        // Verify that all items are now not added for second user
+        await login(1, true);
+        const responseCheck = await runGraphQlQuery({
+            query: `query ShoppingLists {
+                shoppingLists {
+                    listItems {
+                        id
+                        value
+                        bought
+                    }
+                }
+            }`
+        });
+
+        expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
+            { listItems: [] }
+        ]);
+    });
 });
