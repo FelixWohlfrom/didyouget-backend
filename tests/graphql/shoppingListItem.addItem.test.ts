@@ -46,6 +46,7 @@ describe("an unauthorized user", () => {
                 }
             }
         });
+
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
 });
@@ -189,15 +190,11 @@ describe("an authorized user", () => {
     });
 
     it("should be able to add a new shopping list item only to an own list", async () => {
-        // Add a new shopping list for second user
+        // Login as second user
         await registerUser(1);
         await login(1, true);
-        await addShoppingList();
 
-        // Login again as first user
-        await login(0, true);
-
-        // Add a new shopping list item to list of second user
+        // Add a new shopping list item to list of first user
         const response = await runGraphQlQuery({
             query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
                 addShoppingListItem(input: $addShoppingListItemInput) {
@@ -208,7 +205,7 @@ describe("an authorized user", () => {
             }`,
             variables: {
                 addShoppingListItemInput: {
-                    shoppingListId: 2,
+                    shoppingListId: 1,
                     value: "secondItem"
                 }
             }
@@ -218,8 +215,8 @@ describe("an authorized user", () => {
         expect(response.body.errors).toBeUndefined();
         expect(newItem).toBeNull();
 
-        // Verify that all items are now not added for second user
-        await login(1, true);
+        // Verify that all items are now not added for first user
+        await login(0, true);
         const responseCheck = await runGraphQlQuery({
             query: `query ShoppingLists {
                 shoppingLists {
@@ -233,7 +230,15 @@ describe("an authorized user", () => {
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
-            { listItems: [] }
+            {
+                listItems: [
+                    {
+                        id: "1",
+                        value: "listItem",
+                        bought: false
+                    }
+                ]
+            }
         ]);
     });
 });

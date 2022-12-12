@@ -3,6 +3,12 @@ input addShoppingListItemInput {
     value: String!
 }
 
+input boughtShoppingListItemInput {
+    shoppingListItemId: ID!
+    bought: Boolean
+}
+
 type Mutation {
     addShoppingListItem(input: addShoppingListItemInput): ShoppingListItem
+    markShoppingListItemBought(input: boughtShoppingListItemInput): Status!
 }
