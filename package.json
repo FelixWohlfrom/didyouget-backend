@@ -48,7 +48,7 @@
     "graphql-middleware": "^6.1.33",
     "graphql-scalars": "^1.20.0",
     "graphql-shield": "^7.6.3",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mariadb": "^3.0.1",
     "sequelize": "^6.25.2",
     "sqlite3": "^5.1.2"
