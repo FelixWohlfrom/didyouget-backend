@@ -3,12 +3,13 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   build:
+    name: "Build and execute tests on different node versions"
     runs-on: ubuntu-latest
 
     strategy:
