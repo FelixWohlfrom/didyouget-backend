@@ -23,7 +23,7 @@ RUN chown node:node ./
 USER node
 
 COPY package*.json .
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=development /app/dist ./dist
 
