@@ -1,5 +1,5 @@
 # First create development image to build the js code
-FROM node:16.18.0-alpine as development
+FROM node:16.19.0-alpine as development
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY src src
 RUN ["npm", "run", "build"]
 
 # Now build the production image only containing the compiled js code
-FROM node:16.18.0-alpine as production
+FROM node:16.19.0-alpine as production
 
 # Run in production by default
 ARG NODE_ENV=production
