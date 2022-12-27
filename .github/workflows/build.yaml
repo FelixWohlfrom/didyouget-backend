@@ -3,12 +3,13 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   build:
+    name: "Build and execute tests on different node versions"
     runs-on: ubuntu-latest
 
     strategy:
@@ -16,20 +17,22 @@ jobs:
         node-version: [16.x, 18.x]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Verify build on node.js ${{ matrix.node-version }}
-      run: |
-        npm ci
-        npm run build
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Run tests on node.js ${{ matrix.node-version }}
-      run: npm test -- --coverage
+      - name: Setup node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Verify build on node.js ${{ matrix.node-version }}
+        run: |
+          npm ci
+          npm run build
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        flags: ${{ matrix.node-version }}
+      - name: Run tests on node.js ${{ matrix.node-version }}
+        run: npm test -- --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          flags: ${{ matrix.node-version }}
