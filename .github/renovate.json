@@ -5,6 +5,18 @@
   ],
   "packageRules": [
     {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "node"
+      ],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>.*)$"
+    },
+    {
+      "matchDatasources": [
+        "npm"
+      ],
       "matchPackagePatterns": [
         "*"
       ],
