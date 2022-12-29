@@ -19,7 +19,7 @@ export const createApolloServer = (
 
     let landingPage = undefined;
     if (envHandler.isDevelopmentInstance()) {
-        // eslint-disable-next-line new-cap
+        /* istanbul ignore next */ // eslint-disable-next-line new-cap
         landingPage = ApolloServerPluginLandingPageLocalDefault({
             embed: true
         });
@@ -44,6 +44,7 @@ export const createApolloServer = (
                 serverWillStart: async () => {
                     return {
                         drainServer: async () => {
+                            /* istanbul ignore next */
                             await app.close();
                         }
                     };
