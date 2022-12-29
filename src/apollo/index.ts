@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server-fastify";
 import {
     ApolloServerPluginDrainHttpServer,
     ApolloServerPluginLandingPageLocalDefault,
-    ApolloServerPluginLandingPageDisabled
+    ApolloServerPluginLandingPageProductionDefault
 } from "apollo-server-core";
 import { applyMiddleware } from "graphql-middleware";
 import { GraphQLSchema } from "graphql";
@@ -16,6 +16,19 @@ export const createApolloServer = (
     schema: GraphQLSchema
 ) => {
     const schemaWithPermissions = applyMiddleware(schema, ...midlewares);
+
+    let landingPage = undefined;
+    if (envHandler.isDevelopmentInstance()) {
+        /* istanbul ignore next */ // eslint-disable-next-line new-cap
+        landingPage = ApolloServerPluginLandingPageLocalDefault({
+            embed: true
+        });
+    } else {
+        // eslint-disable-next-line new-cap
+        landingPage = ApolloServerPluginLandingPageProductionDefault({
+            footer: false
+        });
+    }
 
     return new ApolloServer({
         schema: schemaWithPermissions,
@@ -31,14 +44,13 @@ export const createApolloServer = (
                 serverWillStart: async () => {
                     return {
                         drainServer: async () => {
+                            /* istanbul ignore next */
                             await app.close();
                         }
                     };
                 }
             },
-            envHandler.isDevelopmentInstance()
-                ? ApolloServerPluginLandingPageLocalDefault({ embed: true }) // eslint-disable-line new-cap
-                : ApolloServerPluginLandingPageDisabled() // eslint-disable-line new-cap
+            landingPage
         ]
     });
 };
