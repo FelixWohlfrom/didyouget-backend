@@ -7,9 +7,13 @@ import { envHandler } from "./utils/envHandler";
 
 const boostrap = async () => {
     const port = Number.parseInt(envHandler.get("PORT", "4000"));
+    const host = envHandler.get(
+        "HOST",
+        envHandler.isDevelopmentInstance() ? "localhost" : undefined
+    );
 
     try {
-        await startApolloServer(port);
+        await startApolloServer(host, port);
         console.log(
             `[Apollo Server]: Up and Running at http://localhost:${port}/graphql 🚀`
         );
