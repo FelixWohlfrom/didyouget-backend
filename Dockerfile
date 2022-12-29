@@ -3,10 +3,10 @@ FROM node:18.12.1-alpine as development
 
 WORKDIR /app
 
-COPY package*.json .
+COPY package*.json ./
 RUN npm ci
 
-COPY tsconfig.json .
+COPY tsconfig.json ./
 COPY src src
 RUN ["npm", "run", "build"]
 
@@ -22,9 +22,11 @@ WORKDIR /app
 RUN chown node:node ./
 USER node
 
-COPY package*.json .
+COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=development /app/dist ./dist
+
+EXPOSE 4000
 
 CMD ["node", "dist/index.js"]
