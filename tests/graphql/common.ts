@@ -118,7 +118,7 @@ function runGraphQlQuery(queryData: object): request.Test {
  * Function to spin up an apollo server. Used in all graphql related tests.
  */
 async function initServer() {
-    server = await startApolloServer(0);
+    server = await startApolloServer("localhost", 0);
 }
 
 /**

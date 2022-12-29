@@ -8,7 +8,7 @@ import { databaseConnection } from "./db/index";
 import { envHandler } from "./utils/envHandler";
 import { Dialect } from "sequelize";
 
-export const startApolloServer = async (port: number) => {
+export const startApolloServer = async (host: string, port: number) => {
     const app = fastify();
 
     const schema = makeExecutableSchema({
@@ -31,7 +31,7 @@ export const startApolloServer = async (port: number) => {
     }
 
     app.register(server.createHandler());
-    await app.listen(port);
+    await app.listen({ host: host, port: port });
 
     return app.server;
 };
