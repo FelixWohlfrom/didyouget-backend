@@ -1,5 +1,6 @@
 type LoginResult {
-  token: String!
+  token: String
+  failureMessage: String
 }
 
 input userInput {
@@ -13,8 +14,8 @@ input updateUserInput {
 }
 
 type Mutation {
-  register(input: userInput): Status
-  login(input: userInput): LoginResult
-  logout: Status
-  updateUser(input: updateUserInput): Status
+  register(input: userInput): Status!
+  login(input: userInput): LoginResult!
+  logout: Status!
+  updateUser(input: updateUserInput): Status!
 }

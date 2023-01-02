@@ -1,3 +1,4 @@
 type Status {
     success: Boolean!
+    failureMessage: String
 }

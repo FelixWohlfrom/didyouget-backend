@@ -1,5 +1,6 @@
 import { User } from "../../../../db/model/User";
 import { hashPassword } from "../../../../utils/auth/hashPassword";
+import { UniqueConstraintError } from "sequelize";
 
 export const register = async (
     _parent: object,
@@ -9,17 +10,24 @@ export const register = async (
 
     const hashedPassword = await hashPassword(password);
 
-    let success = true;
     try {
         await User.create({
             username: username,
             password: hashedPassword
         });
-    } catch {
-        success = false;
+    } catch (exception) {
+        let failureDetails = exception;
+        if (exception instanceof UniqueConstraintError) {
+            failureDetails = "User already exists.";
+        }
+
+        return {
+            success: false,
+            failureMessage: "Failed to create the user. " + failureDetails
+        };
     }
 
     return {
-        success: success
+        success: true
     };
 };
