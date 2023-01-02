@@ -1,3 +1,6 @@
+import { Dialect } from "sequelize";
+import { databaseConnection } from "../../src/db";
+import { User } from "../../src/db/model/User";
 import {
     userData,
     authToken,
@@ -5,7 +8,8 @@ import {
     initServer,
     stopServer,
     login,
-    runGraphQlQuery
+    runGraphQlQuery,
+    registerUser
 } from "./common";
 
 // before the tests we spin up a new Apollo Server
@@ -21,6 +25,26 @@ afterAll(() => {
 describe("an unauthorized user", () => {
     beforeEach(() => {
         setAuthToken(undefined);
+    });
+
+    it("should not be able to login with an unknow user", async () => {
+        const response = await runGraphQlQuery({
+            query: `mutation login($userData: userInput!) {
+                login(input: $userData) {
+                    token
+                    failureMessage
+                }
+            }`,
+            variables: {
+                userData: { username: "unknown", password: "unknown" }
+            }
+        });
+
+        expect(response.body.data?.errors).toBeUndefined();
+        expect(response.body.data?.login.token).toBeNull();
+        expect(response.body.data?.login.failureMessage).toBe(
+            "Invalid user or password."
+        );
     });
 
     it("should be able to register a new user", async () => {
@@ -96,6 +120,22 @@ describe("an unauthorized user", () => {
 });
 
 describe("an authorized user", () => {
+    beforeAll(async () => {
+        // Reset registered user
+        await User.truncate();
+        // Workaround for https://github.com/sequelize/sequelize/issues/11152
+        if ((databaseConnection.getDialect() as Dialect) === "sqlite") {
+            databaseConnection.query(
+                "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME=:tableName",
+                {
+                    replacements: { tableName: User.getTableName() }
+                }
+            );
+        }
+
+        await registerUser();
+    });
+
     beforeEach(async () => {
         await login();
     });
@@ -213,13 +253,18 @@ describe("an authorized user", () => {
         // Login again - this should fail
         const loginResponse = await runGraphQlQuery({
             query: `mutation login($userData: userInput!) {
-                 login(input: $userData) {
-                     token
-                 }
-             }`,
+                login(input: $userData) {
+                    token
+                    failureMessage
+                }
+            }`,
             variables: { userData: userData[0] }
         });
 
-        expect(loginResponse.body.errors[0].message).toBe("Not Authorised!");
+        expect(loginResponse.body.data?.errors).toBeUndefined();
+        expect(loginResponse.body.data?.login.token).toBeNull();
+        expect(loginResponse.body.data?.login.failureMessage).toBe(
+            "Invalid user or password."
+        );
     });
 });
