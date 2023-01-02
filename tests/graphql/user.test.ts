@@ -23,8 +23,17 @@ afterAll(() => {
 });
 
 describe("an unauthorized user", () => {
+    // Store the original environment to reset it later
+    const ORIGINAL_ENV = process.env;
+
     beforeEach(() => {
         setAuthToken(undefined);
+        jest.resetModules(); // Most important - it clears the cache
+        process.env = { ...ORIGINAL_ENV }; // Make a copy
+    });
+
+    afterAll(() => {
+        process.env = ORIGINAL_ENV; // Restore old environment
     });
 
     it("should not be able to login with an unknow user", async () => {
@@ -73,6 +82,42 @@ describe("an unauthorized user", () => {
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.register.success).toBe(false);
+    });
+
+    it("should be able to register a second user if explicitly enabled by admin", async () => {
+        process.env.ALLOW_REGISTRATION = "true";
+
+        const response = await runGraphQlQuery({
+            query: `mutation registerUser($userData: userInput!) {
+                register(input: $userData) {
+                    success
+                }
+            }`,
+            variables: { userData: userData[1] }
+        });
+
+        expect(response.body.errors).toBeUndefined();
+        expect(response.body.data?.register.success).toBeTruthy();
+    });
+
+    it("should not be able to register if disabled by admin", async () => {
+        process.env.ALLOW_REGISTRATION = "false";
+
+        const response = await runGraphQlQuery({
+            query: `mutation registerUser($userData: userInput!) {
+                register(input: $userData) {
+                    success
+                    failureMessage
+                }
+            }`,
+            variables: { userData: userData[0] }
+        });
+
+        expect(response.body.errors).toBeUndefined();
+        expect(response.body.data?.register.success).toBe(false);
+        expect(response.body.data?.register.failureMessage).toBe(
+            "User registration is disabled by administrator."
+        );
     });
 
     it("should login successfully", async () => {

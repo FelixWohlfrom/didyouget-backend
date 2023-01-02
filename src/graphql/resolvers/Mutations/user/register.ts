@@ -1,4 +1,5 @@
 import { User } from "../../../../db/model/User";
+import { envHandler } from "../../../../utils/envHandler";
 import { hashPassword } from "../../../../utils/auth/hashPassword";
 import { UniqueConstraintError } from "sequelize";
 
@@ -9,6 +10,13 @@ export const register = async (
     const { username, password } = args.input;
 
     const hashedPassword = await hashPassword(password);
+
+    if (envHandler.get("ALLOW_REGISTRATION", "true") === "false") {
+        return {
+            success: false,
+            failureMessage: "User registration is disabled by administrator."
+        };
+    }
 
     try {
         await User.create({
