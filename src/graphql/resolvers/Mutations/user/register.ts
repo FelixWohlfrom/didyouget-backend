@@ -19,9 +19,9 @@ export const register = async (
         let failureDetails = exception;
         if (exception instanceof UniqueConstraintError) {
             failureDetails = "User already exists.";
-    }
+        }
 
-    return {
+        return {
             success: false,
             failureMessage: "Failed to create the user. " + failureDetails
         };
