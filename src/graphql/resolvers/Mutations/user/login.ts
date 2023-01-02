@@ -14,14 +14,22 @@ export const login = async (
 
     const user = await User.findOne({ where: { username } });
 
+    // Use same message for invalid user or password to give potential
+    // attackers no hint if the user or password is valid.
+    const failureMesage = "Invalid user or password.";
+
     if (!user) {
-        throw Error("Invalid user");
+        return {
+            failureMessage: failureMesage
+        };
     }
 
     const isValidPassword = await verifyPassword(user.password, password);
 
     if (!isValidPassword) {
-        throw new Error("Invalid password");
+        return {
+            failureMessage: failureMesage
+        };
     }
 
     const [device] = await Device.findOrCreate({
