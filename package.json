@@ -53,6 +53,6 @@
     "jsonwebtoken": "^9.0.0",
     "mariadb": "^3.0.1",
     "sequelize": "^6.25.2",
-    "sqlite3": "^5.1.2"
+    "sqlite3": "^5.1.5"
   }
 }
