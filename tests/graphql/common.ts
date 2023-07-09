@@ -61,7 +61,7 @@ async function registerUser(credentialsId = 0) {
  * @param {string} name An optional name for the list.
  */
 async function addShoppingList(name = "testList") {
-    // Make sure we have our test list in the db
+    // Make sure we have a test list in the db
     const response = await runGraphQlQuery({
         query: `mutation AddShoppingList($addShoppingListInput: addShoppingListInput!) {
             addShoppingList(input: $addShoppingListInput) {

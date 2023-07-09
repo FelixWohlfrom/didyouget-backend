@@ -233,6 +233,49 @@ describe("an authorized user", () => {
         ]);
     });
 
+    it("should not be able to rename a non existing shopping list", async () => {
+        const response = await runGraphQlQuery({
+            query: `mutation RenameShoppingList($renameShoppingListInput: renameShoppingListInput!) {
+                renameShoppingList(input: $renameShoppingListInput) {
+                    success
+                    failureMessage
+                }
+            }`,
+            variables: {
+                renameShoppingListInput: { id: 3, name: "updatedValue" }
+            }
+        });
+
+        expect(response.body.errors).toBeUndefined();
+        expect(response.body.data?.renameShoppingList.success).toBe(false);
+        expect(response.body.data?.renameShoppingList.failureMessage).toBe(
+            "Unknown list"
+        );
+
+        // Verify that lists are not touched
+        const responseCheck = await runGraphQlQuery({
+            query: `query ShoppingList {
+                shoppingLists {
+                    id
+                    owner
+                    name
+                    listItems {
+                        id
+                    }
+                }
+            }`
+        });
+
+        expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
+            {
+                id: "1",
+                owner: "1",
+                name: "testList",
+                listItems: []
+            }
+        ]);
+    });
+
     it("should not be able to rename a shopping list the user doesn't own", async () => {
         // First login with second user
         await login(1, true);
@@ -352,6 +395,49 @@ describe("an authorized user", () => {
 
         // Verify that lists are not touched
         await login(0, true);
+        const responseCheck = await runGraphQlQuery({
+            query: `query ShoppingList {
+                shoppingLists {
+                    id
+                    owner
+                    name
+                    listItems {
+                        id
+                    }
+                }
+            }`
+        });
+
+        expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
+            {
+                id: "1",
+                owner: "1",
+                name: "testList",
+                listItems: []
+            }
+        ]);
+    });
+
+    it("should not be able to delete a non existing shopping list", async () => {
+        const response = await runGraphQlQuery({
+            query: `mutation DeleteShoppingList($deleteShoppingListInput: deleteShoppingListInput!) {
+                deleteShoppingList(input: $deleteShoppingListInput) {
+                    success
+                    failureMessage
+                }
+            }`,
+            variables: {
+                deleteShoppingListInput: { id: 3 }
+            }
+        });
+
+        expect(response.body.errors).toBeUndefined();
+        expect(response.body.data?.deleteShoppingList.success).toBe(false);
+        expect(response.body.data?.deleteShoppingList.failureMessage).toBe(
+            "Unknown list"
+        );
+
+        // Verify that lists are not touched
         const responseCheck = await runGraphQlQuery({
             query: `query ShoppingList {
                 shoppingLists {
