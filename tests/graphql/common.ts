@@ -57,8 +57,10 @@ async function registerUser(credentialsId = 0) {
 
 /**
  * Will add a predefined shopping list.
+ *
+ * @param {string} name An optional name for the list.
  */
-async function addShoppingList() {
+async function addShoppingList(name = "testList") {
     // Make sure we have our test list in the db
     const response = await runGraphQlQuery({
         query: `mutation AddShoppingList($addShoppingListInput: addShoppingListInput!) {
@@ -66,7 +68,7 @@ async function addShoppingList() {
                 id
             }
         }`,
-        variables: { addShoppingListInput: { name: "testList" } }
+        variables: { addShoppingListInput: { name: name } }
     });
 
     expect(response.body.errors).toBeUndefined();
@@ -82,14 +84,15 @@ async function login(credentialsId = 0, force = false) {
     if (!authToken || force) {
         const response = await runGraphQlQuery({
             query: `mutation login($userData: userInput!) {
-                 login(input: $userData) {
-                     token
-                 }
-             }`,
+                login(input: $userData) {
+                    token
+                }
+            }`,
             variables: { userData: userData[credentialsId] }
         });
 
         expect(response.body.errors).toBeUndefined();
+        expect(response.body.data?.login.token).not.toBeNull();
         expect(response.body.data?.login.token).not.toBe("");
 
         authToken = response.body.data.login.token;
