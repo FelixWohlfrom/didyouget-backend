@@ -104,7 +104,7 @@ describe("an authorized user", () => {
 
         // Make sure we have our test list in the db
         // Only check for absence of errors, more detailed checks are done in a separate testcase
-        addShoppingList();
+        await addShoppingList();
     });
 
     it("should be able to query all shoppinglists connected to the current user", async () => {
