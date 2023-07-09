@@ -9,7 +9,8 @@ import {
     login,
     runGraphQlQuery,
     registerUser,
-    addShoppingList
+    addShoppingList,
+    addShoppingListItem
 } from "./common";
 
 // before the tests we spin up a new Apollo Server
@@ -30,19 +31,17 @@ describe("an unauthorized user", () => {
         setAuthToken(undefined);
     });
 
-    it("should not be able to add a new shopping list item", async () => {
+    it("should not be able to delete a shopping list item", async () => {
         const response = await runGraphQlQuery({
-            query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
-                addShoppingListItem(input: $addShoppingListItemInput) {
-                    id
-                    value
-                    bought
+            query: `mutation AddShoppingListItem($deleteShoppingListItemInput: deleteShoppingListItemInput!) {
+                deleteShoppingListItem(input: $deleteShoppingListItemInput) {
+                    success
+                    failureMessage
                 }
             }`,
             variables: {
-                addShoppingListItemInput: {
-                    shoppingListId: 1,
-                    value: "listItem"
+                deleteShoppingListItemInput: {
+                    shoppingListItemId: 1
                 }
             }
         });
@@ -74,27 +73,36 @@ describe("an authorized user", () => {
         // Add the shopping list again
         await addShoppingList();
 
-        // Add a shopping list item
+        // Add two shopping list items
         // Only check for absence of errors, more detailed checks are done in a separate testcase
+        await addShoppingListItem();
+        await addShoppingListItem(1, "secondItem");
+    });
+
+    it("should be able to delete a list item", async () => {
         const response = await runGraphQlQuery({
-            query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
-                addShoppingListItem(input: $addShoppingListItemInput) {
-                    id
+            query: `mutation DeleteShoppingListItem($deleteShoppingListItemInput: deleteShoppingListItemInput!) {
+                deleteShoppingListItem(input: $deleteShoppingListItemInput) {
+                    success
+                    failureMessage
                 }
             }`,
             variables: {
-                addShoppingListItemInput: {
-                    shoppingListId: 1,
-                    value: "listItem"
+                deleteShoppingListItemInput: {
+                    shoppingListItemId: 1
                 }
             }
         });
-        expect(response.body.errors).toBeUndefined();
-    });
 
-    it("should be able to query all shoppinglists items for a shopping list", async () => {
-        const response = await runGraphQlQuery({
-            query: `query ShoppingList {
+        expect(response.body.errors).toBeUndefined();
+        expect(response.body.data?.deleteShoppingListItem.success).toBe(true);
+        expect(
+            response.body.data?.deleteShoppingListItem.failureMessage
+        ).toBeNull();
+
+        // Verify that only remaining items are returned
+        const responseCheck = await runGraphQlQuery({
+            query: `query ShoppingLists {
                 shoppingLists {
                     listItems {
                         id
@@ -105,35 +113,39 @@ describe("an authorized user", () => {
             }`
         });
 
-        const listItem = response.body.data?.shoppingLists[0].listItems[0];
-        expect(listItem.id).toBe("1");
-        expect(listItem.value).toBe("listItem");
-        expect(listItem.bought).toBe(false);
+        expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
+            {
+                listItems: [
+                    {
+                        id: "2",
+                        value: "secondItem",
+                        bought: false
+                    }
+                ]
+            }
+        ]);
     });
 
-    it("should be able to add a new shopping list item", async () => {
-        // Add a new shopping list item
+    it("should not be able to delete items of non existing item", async () => {
         const response = await runGraphQlQuery({
-            query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
-                addShoppingListItem(input: $addShoppingListItemInput) {
-                    id
-                    value
-                    bought
+            query: `mutation DeleteShoppingListItem($deleteShoppingListItemInput: deleteShoppingListItemInput!) {
+                deleteShoppingListItem(input: $deleteShoppingListItemInput) {
+                    success
+                    failureMessage
                 }
             }`,
             variables: {
-                addShoppingListItemInput: {
-                    shoppingListId: 1,
-                    value: "secondItem"
+                deleteShoppingListItemInput: {
+                    shoppingListItemId: -1
                 }
             }
         });
 
-        const newItem = response.body.data?.addShoppingListItem;
         expect(response.body.errors).toBeUndefined();
-        expect(newItem.id).toBe("2");
-        expect(newItem.value).toBe("secondItem");
-        expect(newItem.bought).toBe(false);
+        expect(response.body.data?.deleteShoppingListItem.success).toBe(false);
+        expect(response.body.data?.deleteShoppingListItem.failureMessage).toBe(
+            "Unknown list item"
+        );
 
         // Verify that all items are now returned
         const responseCheck = await runGraphQlQuery({
@@ -166,54 +178,33 @@ describe("an authorized user", () => {
         ]);
     });
 
-    it("should not be able to add items to non existing lists", async () => {
-        // Add a new shopping list item to a non existing list
-        const response = await runGraphQlQuery({
-            query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
-                addShoppingListItem(input: $addShoppingListItemInput) {
-                    id
-                    value
-                    bought
-                }
-            }`,
-            variables: {
-                addShoppingListItemInput: {
-                    shoppingListId: 2,
-                    value: "secondItem"
-                }
-            }
-        });
-
-        const newItem = response.body.data?.addShoppingListItem;
-        expect(response.body.errors).toBeUndefined();
-        expect(newItem).toBeNull();
-    });
-
-    it("should be able to add a new shopping list item only to an own list", async () => {
+    it("should be able to delete a shopping list item only from an own list", async () => {
         // Login as second user
         await registerUser(1);
         await login(1, true);
+        await addShoppingList("secondList");
+        await addShoppingListItem(2);
 
         // Add a new shopping list item to list of first user
         const response = await runGraphQlQuery({
-            query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
-                addShoppingListItem(input: $addShoppingListItemInput) {
-                    id
-                    value
-                    bought
+            query: `mutation DeleteShoppingListItem($deleteShoppingListItemInput: deleteShoppingListItemInput!) {
+                deleteShoppingListItem(input: $deleteShoppingListItemInput) {
+                    success
+                    failureMessage
                 }
             }`,
             variables: {
-                addShoppingListItemInput: {
-                    shoppingListId: 1,
-                    value: "secondItem"
+                deleteShoppingListItemInput: {
+                    shoppingListItemId: 1
                 }
             }
         });
 
-        const newItem = response.body.data?.addShoppingListItem;
         expect(response.body.errors).toBeUndefined();
-        expect(newItem).toBeNull();
+        expect(response.body.data?.deleteShoppingListItem.success).toBe(false);
+        expect(response.body.data?.deleteShoppingListItem.failureMessage).toBe(
+            "Unknown list item"
+        );
 
         // Verify that all items are now not added for first user
         await login(0, true);
@@ -235,6 +226,11 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "listItem",
+                        bought: false
+                    },
+                    {
+                        id: "2",
+                        value: "secondItem",
                         bought: false
                     }
                 ]

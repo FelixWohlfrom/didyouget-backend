@@ -3,6 +3,16 @@ input addShoppingListItemInput {
     value: String!
 }
 
+input updateShoppingListItemInput {
+    shoppingListItemId: ID!
+    newValue: String!
+    bought: Boolean
+}
+
+input deleteShoppingListItemInput {
+    shoppingListItemId: ID!
+}
+
 input boughtShoppingListItemInput {
     shoppingListItemId: ID!
     bought: Boolean
@@ -10,5 +20,7 @@ input boughtShoppingListItemInput {
 
 type Mutation {
     addShoppingListItem(input: addShoppingListItemInput): ShoppingListItem
+    updateShoppingListItem(input: updateShoppingListItemInput): Status!
+    deleteShoppingListItem(input: deleteShoppingListItemInput): Status!
     markShoppingListItemBought(input: boughtShoppingListItemInput): Status!
 }

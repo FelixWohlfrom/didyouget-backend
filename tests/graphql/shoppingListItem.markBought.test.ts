@@ -74,7 +74,7 @@ describe("an authorized user", () => {
         await ListItem.truncate();
         // Workaround for https://github.com/sequelize/sequelize/issues/11152
         if ((databaseConnection.getDialect() as Dialect) === "sqlite") {
-            databaseConnection.query(
+            await databaseConnection.query(
                 "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME IN (:firstTable, :secondTable)",
                 {
                     replacements: {
@@ -86,7 +86,7 @@ describe("an authorized user", () => {
         }
 
         // Add the shopping list again
-        addShoppingList();
+        await addShoppingList();
 
         // Add a shopping list item
         const response = await runGraphQlQuery({
@@ -156,10 +156,10 @@ describe("an authorized user", () => {
             // Mark item as bought
             const response = await runGraphQlQuery({
                 query: `mutation MarkShoppingListItemBought($boughtShoppingListItemInput: boughtShoppingListItemInput!) {
-                markShoppingListItemBought(input: $boughtShoppingListItemInput) {
-                    success
-                }
-            }`,
+                    markShoppingListItemBought(input: $boughtShoppingListItemInput) {
+                        success
+                    }
+                }`,
                 variables: {
                     boughtShoppingListItemInput: {
                         shoppingListItemId: 1,
@@ -175,14 +175,14 @@ describe("an authorized user", () => {
             // Verify that all items are now returned
             const responseCheck = await runGraphQlQuery({
                 query: `query ShoppingLists {
-                shoppingLists {
-                    listItems {
-                        id
-                        value
-                        bought
+                    shoppingLists {
+                        listItems {
+                            id
+                            value
+                            bought
+                        }
                     }
-                }
-            }`
+                }`
             });
 
             expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -227,10 +227,10 @@ describe("an authorized user", () => {
         // Update item of first user as bought
         const response = await runGraphQlQuery({
             query: `mutation MarkShoppingListItemBought($boughtShoppingListItemInput: boughtShoppingListItemInput!) {
-            markShoppingListItemBought(input: $boughtShoppingListItemInput) {
-                success
-            }
-        }`,
+                markShoppingListItemBought(input: $boughtShoppingListItemInput) {
+                    success
+                }
+            }`,
             variables: {
                 boughtShoppingListItemInput: {
                     shoppingListItemId: 1

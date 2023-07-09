@@ -9,7 +9,8 @@ export const shoppingLists = async (
 ) => {
     const result = await ShoppingList.findAll({
         where: { owner: context.auth.userid },
-        include: ListItem
+        include: ListItem,
+        order: [[ListItem, "id", "ASC"]]
     });
     return result;
 };
