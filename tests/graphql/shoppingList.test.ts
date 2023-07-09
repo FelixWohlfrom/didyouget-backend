@@ -20,7 +20,7 @@ beforeAll(async () => {
 
 // after the tests we'll stop the server
 afterAll(async () => {
-    stopServer();
+    await stopServer();
 });
 
 describe("an unauthorized user", () => {
