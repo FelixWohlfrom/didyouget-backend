@@ -2,6 +2,17 @@ input addShoppingListInput {
     name: String!
 }
 
+input renameShoppingListInput {
+    id: ID!
+    name: String!
+}
+
+input deleteShoppingListInput {
+    id: ID!
+}
+
 type Mutation {
     addShoppingList(input: addShoppingListInput): ShoppingList
+    renameShoppingList(input: renameShoppingListInput): Status!
+    deleteShoppingList(input: deleteShoppingListInput): Status!
 }
