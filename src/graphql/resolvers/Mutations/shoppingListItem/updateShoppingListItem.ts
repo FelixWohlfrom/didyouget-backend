@@ -2,16 +2,18 @@ import { ListItem } from "../../../../db/model/ListItem";
 import { ShoppingList } from "../../../../db/model/Shoppinglist";
 import { DidYouGetLoginData } from "../../../../utils/auth/model";
 
-export const markShoppingListItemBought = async (
+export const updateShoppingListItem = async (
     _parent: object,
-    args: { input: { shoppingListItemId: number; bought: boolean } },
+    args: {
+        input: {
+            shoppingListItemId: number;
+            newValue: string;
+            bought: boolean;
+        };
+    },
     context: { auth: DidYouGetLoginData }
 ) => {
-    let { shoppingListItemId, bought } = args.input;
-
-    if (bought === undefined) {
-        bought = true;
-    }
+    const { shoppingListItemId, newValue, bought } = args.input;
 
     const listItem = await ListItem.findByPk(shoppingListItemId);
     const list = await ShoppingList.findByPk(listItem?.listId);
@@ -26,7 +28,10 @@ export const markShoppingListItemBought = async (
         };
     }
 
-    listItem.bought = bought;
+    listItem.value = newValue;
+    if (bought !== undefined) {
+        listItem.bought = bought;
+    }
     await listItem.save();
 
     return { success: true };

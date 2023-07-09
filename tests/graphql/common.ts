@@ -75,6 +75,30 @@ async function addShoppingList(name = "testList") {
 }
 
 /**
+ * Will add a predefined shopping list.
+ *
+ * @param {number} shoppingListId An optional id to which the item should be added
+ * @param {string} value An optional name for the list item.
+ */
+async function addShoppingListItem(shoppingListId = 1, value = "listItem") {
+    // Make sure we have a test list item in the db
+    const response = await runGraphQlQuery({
+        query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
+            addShoppingListItem(input: $addShoppingListItemInput) {
+                id
+            }
+        }`,
+        variables: {
+            addShoppingListItemInput: {
+                shoppingListId: shoppingListId,
+                value: value
+            }
+        }
+    });
+    expect(response.body.errors).toBeUndefined();
+}
+
+/**
  * Will login using the predefined user authentication.
  *
  * @param {int} credentialsId The credentials to use for log in. Default 0.
@@ -140,5 +164,6 @@ export {
     registerUser,
     login,
     addShoppingList,
+    addShoppingListItem,
     runGraphQlQuery
 };
