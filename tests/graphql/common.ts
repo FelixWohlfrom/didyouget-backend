@@ -127,7 +127,7 @@ async function initServer() {
 /**
  * After the tests we'll stop the server
  */
-function stopServer() {
+async function stopServer() {
     server?.close();
 }
 
