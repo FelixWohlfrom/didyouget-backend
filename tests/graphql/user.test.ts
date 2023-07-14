@@ -137,6 +137,17 @@ describe("an unauthorized user", () => {
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
 
+    it("should get unauthorised message while checking login status", async () => {
+        const response = await runGraphQlQuery({
+            query: `query IsLoggedin {
+                isLoggedin {
+                    success
+                }
+            }`
+        });
+        expect(response.body.errors[0].message).toBe("Not Authorised!");
+    });
+
     it("should not be able to query all users", async () => {
         const response = await runGraphQlQuery({
             query: `query Users {
@@ -311,5 +322,17 @@ describe("an authorized user", () => {
         expect(loginResponse.body.data?.login.failureMessage).toBe(
             "Invalid user or password."
         );
+    });
+
+    it("should return success while checking login status", async () => {
+        const response = await runGraphQlQuery({
+            query: `query IsLoggedin {
+                isLoggedin {
+                    success
+                }
+            }`
+        });
+        expect(response.body.data?.errors).toBeUndefined();
+        expect(response.body.data?.isLoggedin.success).toBe(true);
     });
 });
