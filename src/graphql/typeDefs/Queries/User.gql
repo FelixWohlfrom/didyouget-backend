@@ -2,7 +2,7 @@ type Query {
     """
         Returns true if the user currently trying to connect is logged in.
     """
-    isLoggedin: Status!
+    isLoggedIn: Status!
     """
         Returns either the user information for a given user id or the currently logged in user.
     """

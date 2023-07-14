@@ -1,6 +1,6 @@
 import { DidYouGetLoginData } from "../../../../utils/auth/model";
 
-export const isLoggedin = (
+export const isLoggedIn = (
     _parent: object,
     _args: object,
     context: { auth: DidYouGetLoginData }

@@ -1,3 +1,3 @@
-export * from "./isLoggedin";
+export * from "./isLoggedIn";
 export * from "./user";
 export * from "./users";
