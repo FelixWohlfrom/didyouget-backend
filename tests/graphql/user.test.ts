@@ -139,8 +139,8 @@ describe("an unauthorized user", () => {
 
     it("should get unauthorised message while checking login status", async () => {
         const response = await runGraphQlQuery({
-            query: `query IsLoggedin {
-                isLoggedin {
+            query: `query IsLoggedIn {
+                isLoggedIn {
                     success
                 }
             }`
@@ -326,13 +326,13 @@ describe("an authorized user", () => {
 
     it("should return success while checking login status", async () => {
         const response = await runGraphQlQuery({
-            query: `query IsLoggedin {
-                isLoggedin {
+            query: `query IsLoggedIn {
+                isLoggedIn {
                     success
                 }
             }`
         });
         expect(response.body.data?.errors).toBeUndefined();
-        expect(response.body.data?.isLoggedin.success).toBe(true);
+        expect(response.body.data?.isLoggedIn.success).toBe(true);
     });
 });
