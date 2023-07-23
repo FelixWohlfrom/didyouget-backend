@@ -8,8 +8,10 @@ import {
     login,
     runGraphQlQuery,
     registerUser,
-    addShoppingList
+    addShoppingList,
+    addShoppingListItem
 } from "./common";
+import { ListItem } from "../../src/db/model/ListItem";
 
 // before the tests we spin up a new Apollo Server
 beforeAll(async () => {
@@ -326,6 +328,10 @@ describe("an authorized user", () => {
 
     it("should be able to delete a shopping list", async () => {
         await addShoppingList("secondList");
+        await addShoppingListItem(2, "An element");
+        await addShoppingListItem(2, "Another element");
+        // Add also an item to first list, this should still remain
+        await addShoppingListItem(1, "This should remain");
 
         // Delete the shopping list
         const response = await runGraphQlQuery({
@@ -346,7 +352,13 @@ describe("an authorized user", () => {
             response.body.data?.deleteShoppingList.failureMessage
         ).toBeNull();
 
-        // Verify that all items are now returned
+        // Make sure that all list items are deleted.
+        // We need to read this information directly from db, since we don't have
+        // a dedicaded api for list items only.
+        const listItems = await ListItem.findAll();
+        expect(listItems).toHaveLength(1);
+
+        // Verify that correct items are now returned
         const responseCheck = await runGraphQlQuery({
             query: `query ShoppingList {
                 shoppingLists {
@@ -355,6 +367,8 @@ describe("an authorized user", () => {
                     name
                     listItems {
                         id
+                        value
+                        bought
                     }
                 }
             }`
@@ -365,7 +379,13 @@ describe("an authorized user", () => {
                 id: "1",
                 owner: "1",
                 name: "testList",
-                listItems: []
+                listItems: [
+                    {
+                        id: "3",
+                        value: "This should remain",
+                        bought: false
+                    }
+                ]
             }
         ]);
     });
