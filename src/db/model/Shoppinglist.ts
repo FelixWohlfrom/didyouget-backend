@@ -39,6 +39,10 @@ ShoppingList.init(
     }
 );
 
-ShoppingList.hasMany(ListItem, { foreignKey: "listId" });
+ShoppingList.hasMany(ListItem, {
+    foreignKey: "listId",
+    onDelete: "cascade",
+    hooks: true
+});
 
 export { ShoppingList };
