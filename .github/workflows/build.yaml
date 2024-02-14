@@ -36,3 +36,5 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           flags: ${{ matrix.node-version }}
+          token: ${{ secrets.CODECOV_SECRET }}
+          fail_ci_if_error: true
