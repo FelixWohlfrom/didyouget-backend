@@ -1,14 +1,14 @@
-import { ApolloServer } from "apollo-server-fastify";
+import { ApolloServer } from "@apollo/server";
 import {
-    ApolloServerPluginDrainHttpServer,
     ApolloServerPluginLandingPageLocalDefault,
     ApolloServerPluginLandingPageProductionDefault
-} from "apollo-server-core";
+} from "@apollo/server/plugin/landingPage/default";
 import { applyMiddleware } from "graphql-middleware";
 import { GraphQLSchema } from "graphql";
 import { FastifyInstance } from "fastify";
-import { getAuthData } from "../utils/auth/getAuthData";
 import { envHandler } from "../utils/envHandler";
+import { fastifyApolloDrainPlugin } from "@as-integrations/fastify";
+import { AppContext } from "./model";
 
 export const createApolloServer = (
     midlewares: [object],
@@ -30,27 +30,10 @@ export const createApolloServer = (
         });
     }
 
-    return new ApolloServer({
+    return new ApolloServer<AppContext>({
         schema: schemaWithPermissions,
         cache: "bounded",
         csrfPrevention: true,
-        context: ({ request }) => ({
-            auth: getAuthData(request.headers)
-        }),
-        plugins: [
-            // eslint-disable-next-line new-cap
-            ApolloServerPluginDrainHttpServer({ httpServer: app.server }),
-            {
-                serverWillStart: async () => {
-                    return {
-                        drainServer: async () => {
-                            /* istanbul ignore next */
-                            await app.close();
-                        }
-                    };
-                }
-            },
-            landingPage
-        ]
+        plugins: [fastifyApolloDrainPlugin(app), landingPage]
     });
 };

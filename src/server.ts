@@ -7,6 +7,11 @@ import { createApolloServer } from "./apollo/index";
 import { databaseConnection } from "./db/index";
 import { envHandler } from "./utils/envHandler";
 import { Dialect } from "sequelize";
+import fastifyApollo, {
+    ApolloFastifyContextFunction
+} from "@as-integrations/fastify";
+import { AppContext } from "./apollo/model";
+import { getAuthData } from "./utils/auth/getAuthData";
 
 export const startApolloServer = async (host: string, port: number) => {
     const app = fastify();
@@ -30,7 +35,13 @@ export const startApolloServer = async (host: string, port: number) => {
         await databaseConnection.sync();
     }
 
-    app.register(server.createHandler());
+    const contextLoader: ApolloFastifyContextFunction<AppContext> = async (
+        request
+    ) => ({
+        auth: getAuthData(request.headers)
+    });
+
+    await app.register(fastifyApollo(server), { context: contextLoader });
     await app.listen({ host: host, port: port });
 
     return app.server;
