@@ -44,7 +44,7 @@ describe("an unauthorized user", () => {
                     success
                 }
             }`,
-            variables: { deviceInput: { newDeviceName: "testDevice" } }
+            variables: { deviceInput: { device: "testDevice" } }
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
@@ -81,7 +81,7 @@ describe("an authorized user", () => {
                     success
                 }
             }`,
-            variables: { deviceInput: { newDeviceName: "testDevice" } }
+            variables: { deviceInput: { device: "testDevice" } }
         });
         expect(responseUpdate.body.data?.updateDeviceName.success).toBe(true);
 
