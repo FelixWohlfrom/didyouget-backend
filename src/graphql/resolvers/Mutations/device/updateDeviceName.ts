@@ -3,13 +3,13 @@ import { DidYouGetLoginData } from "../../../../utils/auth/model";
 
 export const updateDeviceName = async (
     _parent: object,
-    args: { input: { newDeviceName: string } },
+    args: { input: { device: string } },
     context: { auth: DidYouGetLoginData }
 ) => {
-    const { newDeviceName } = args.input;
+    const { device } = args.input;
 
     await Device.update(
-        { name: newDeviceName },
+        { name: device },
         { where: { token: context.auth.deviceToken } }
     );
 
