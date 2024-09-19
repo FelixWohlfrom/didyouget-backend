@@ -19,12 +19,11 @@ export const createApolloServer = (
 
     let landingPage = undefined;
     if (envHandler.isDevelopmentInstance()) {
-        /* istanbul ignore next */ // eslint-disable-next-line new-cap
+        /* istanbul ignore next */
         landingPage = ApolloServerPluginLandingPageLocalDefault({
             embed: true
         });
     } else {
-        // eslint-disable-next-line new-cap
         landingPage = ApolloServerPluginLandingPageProductionDefault({
             footer: false
         });

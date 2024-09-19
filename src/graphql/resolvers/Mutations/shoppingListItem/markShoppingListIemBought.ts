@@ -7,7 +7,8 @@ export const markShoppingListItemBought = async (
     args: { input: { shoppingListItemId: number; bought: boolean } },
     context: { auth: DidYouGetLoginData }
 ) => {
-    let { shoppingListItemId, bought } = args.input;
+    const shoppingListItemId = args.input.shoppingListItemId;
+    let bought = args.input.bought;
 
     if (bought === undefined) {
         bought = true;
@@ -18,7 +19,6 @@ export const markShoppingListItemBought = async (
 
     // we know that we only have valid links in our db, so either we have both
     // list item and list, or none
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (!listItem || list!.owner !== context.auth.userid) {
         return {
             success: false,
