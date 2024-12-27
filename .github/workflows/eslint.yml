@@ -32,12 +32,11 @@ jobs:
 
       - name: Install ESLint
         run: |
-          npm install eslint@9.10.0
+          npm ci
           npm install @microsoft/eslint-formatter-sarif@3.1.0
 
       - name: Run ESLint
-        run: npx eslint .
-          --config eslint.config.mjs
+        run: npm run lint --
           --format @microsoft/eslint-formatter-sarif 
           --output-file eslint-results.sarif
         continue-on-error: true
