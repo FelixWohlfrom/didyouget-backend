@@ -30,11 +30,18 @@ jobs:
           npm run build
 
       - name: Run tests on node.js ${{ matrix.node-version }}
-        run: npm test -- --coverage
+        run: npm test -- --coverage --reporters=jest-junit
 
       - name: Upload coverage to Codecov
+        if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v5
         with:
           flags: ${{ matrix.node-version }}
           token: ${{ secrets.CODECOV_SECRET }}
           fail_ci_if_error: true
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_SECRET }}
