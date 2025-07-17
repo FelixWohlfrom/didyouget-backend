@@ -11,7 +11,8 @@
     "lint": "eslint . --config eslint.config.mjs",
     "lint:fix": "npm run lint -- --fix",
     "test": "jest",
-    "test:coverage": "npm run test -- --collectCoverage"
+    "test:coverage": "npm run test -- --collectCoverage",
+    "test:junit": "npm run test -- --reporters=jest-junit"
   },
   "keywords": [
     "shopping",
@@ -32,6 +33,7 @@
     "eslint-config-prettier": "10.1.5",
     "eslint-plugin-prettier": "5.5.1",
     "jest": "30.0.4",
+    "jest-junit": "^16.0.0",
     "nodemon": "3.1.10",
     "supertest": "7.1.3",
     "ts-jest": "29.4.0",
