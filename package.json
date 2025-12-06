@@ -54,7 +54,6 @@
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.4.1",
     "sequelize": "^6.37.7",
-    "sqlite3": "^5.1.7",
-    "tar-fs": "^3.0.0"
+    "sqlite3": "^5.1.7"
   }
 }
