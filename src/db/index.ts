@@ -1,5 +1,5 @@
 import { DataSource, DataSourceOptions } from "typeorm";
-import dbConfig from "./config";
+import { getConfig } from "./config";
 import { Device } from "./model/Device";
 import { User } from "./model/User";
 import { ShoppingList } from "./model/Shoppinglist";
@@ -8,6 +8,7 @@ import { ListItem } from "./model/ListItem";
 let database: DataSource | null = null;
 
 function getDataConfig(): DataSourceOptions {
+    const dbConfig = getConfig();
     if (dbConfig.DB_TYPE === "better-sqlite3") {
         return {
             type: "better-sqlite3",
@@ -37,4 +38,8 @@ function initDatabaseConnection() {
 export async function getDatabase(): Promise<DataSource> {
     database ??= await initDatabaseConnection();
     return database;
+}
+
+export function resetDatabase() {
+    database = null;
 }
