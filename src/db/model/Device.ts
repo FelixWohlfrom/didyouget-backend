@@ -1,52 +1,42 @@
 import {
-    DataTypes,
-    Model,
-    InferAttributes,
-    InferCreationAttributes,
-    ForeignKey
-} from "sequelize";
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
 
-import { databaseConnection } from "../index";
+import { User } from "./User";
 
 /**
  * Describes a device
  */
-class Device extends Model<
-    InferAttributes<Device>,
-    InferCreationAttributes<Device>
-> {
+@Entity()
+export class Device {
+    @PrimaryGeneratedColumn()
+    declare id: number;
+
+    @Column({ default: "" })
     declare name: string;
+
+    @Column()
     declare token: string;
+
+    @Column()
     declare loggedin: boolean;
 
-    declare userId: ForeignKey<number>;
+    @CreateDateColumn()
+    declare firstSeen: Date;
+
+    @UpdateDateColumn()
+    declare lastSeen: Date;
+
+    // Add column to return user id as described in
+    // https://typeorm.io/docs/relations/relations-faq/#how-to-use-relation-id-without-joining-relation
+    @Column({ nullable: true })
+    declare userId: number;
+
+    @ManyToOne(() => User, (user) => user.devices, { onDelete: "CASCADE" })
+    declare user: User;
 }
-
-Device.init(
-    {
-        name: {
-            type: DataTypes.STRING,
-            defaultValue: "",
-            allowNull: false
-        },
-        token: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-            allowNull: false
-        },
-        loggedin: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-            allowNull: false
-        }
-    },
-    {
-        sequelize: databaseConnection,
-        timestamps: true,
-        createdAt: "firstSeen",
-        updatedAt: "lastSeen",
-        modelName: "device"
-    }
-);
-
-export { Device };

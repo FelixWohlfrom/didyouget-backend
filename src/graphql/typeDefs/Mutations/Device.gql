@@ -4,4 +4,5 @@ input deviceInput {
 
 type Mutation {
     updateDeviceName(input: deviceInput): Status!
+    logoutDevice(input: deviceInput): Status!
 }

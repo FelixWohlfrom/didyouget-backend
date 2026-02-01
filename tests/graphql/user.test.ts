@@ -1,5 +1,4 @@
-import { Dialect } from "sequelize";
-import { databaseConnection } from "../../src/db";
+import { getDatabase } from "../../src/db";
 import { User } from "../../src/db/model/User";
 import {
     userData,
@@ -49,7 +48,7 @@ describe("an unauthorized user", () => {
             }
         });
 
-        expect(response.body.data?.errors).toBeUndefined();
+        expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.login.token).toBeNull();
         expect(response.body.data?.login.failureMessage).toBe(
             "Invalid user or password."
@@ -75,6 +74,7 @@ describe("an unauthorized user", () => {
             query: `mutation registerUser($userData: userInput!) {
                 register(input: $userData) {
                     success
+                    failureMessage
                 }
             }`,
             variables: { userData: userData[0] }
@@ -82,6 +82,9 @@ describe("an unauthorized user", () => {
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.register.success).toBe(false);
+        expect(response.body.data?.register.failureMessage).toBe(
+            "Failed to create the user. User already exists."
+        );
     });
 
     it("should be able to register a second user if explicitly enabled by admin", async () => {
@@ -178,15 +181,16 @@ describe("an unauthorized user", () => {
 describe("an authorized user", () => {
     beforeAll(async () => {
         // Reset registered user
-        await User.truncate();
-        // Workaround for https://github.com/sequelize/sequelize/issues/11152
-        if ((databaseConnection.getDialect() as Dialect) === "sqlite") {
-            databaseConnection.query(
-                "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME=:tableName",
-                {
-                    replacements: { tableName: User.getTableName() }
-                }
-            );
+        const db = await getDatabase();
+        await db.getRepository(User).clear();
+        // Workaround for https://github.com/typeorm/typeorm/issues/4533
+        if (db.options.type.includes("sqlite")) {
+            await db
+                .createQueryRunner()
+                .query(
+                    "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME=:tableName",
+                    [{ tableName: db.getRepository(User).metadata.tableName }]
+                );
         }
 
         await registerUser();
@@ -204,6 +208,7 @@ describe("an authorized user", () => {
                 }
             }`
         });
+
         expect(response.body.data?.logout.success).toBe(true);
         setAuthToken(undefined);
     });
@@ -217,6 +222,7 @@ describe("an authorized user", () => {
                 }
             }`
         });
+
         expect(response.body.data?.users[0].id).toBe("1");
         expect(response.body.data?.users[0].username).toBe("TestUser");
         expect(response.body.data?.users).toHaveLength(1);
@@ -231,6 +237,7 @@ describe("an authorized user", () => {
                 }
             }`
         });
+
         expect(response.body.data?.user.id).toBe("1");
         expect(response.body.data?.user.username).toBe("TestUser");
     });
@@ -244,6 +251,7 @@ describe("an authorized user", () => {
                 }
             }`
         });
+
         expect(response.body.data?.user.id).toBe("1");
         expect(response.body.data?.user.username).toBe("TestUser");
     });
@@ -257,6 +265,7 @@ describe("an authorized user", () => {
                 }
             }`
         });
+
         expect(response.body.data?.user).toBeNull();
     });
 
@@ -272,7 +281,8 @@ describe("an authorized user", () => {
                 updateUserInput: { username: "newUser" }
             }
         });
-        expect(response.body.data?.errors).toBeUndefined();
+
+        expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.updateUser.success).toBe(true);
 
         // Verify that the user data is really updated
@@ -284,6 +294,7 @@ describe("an authorized user", () => {
                 }
             }`
         });
+
         expect(checkResponse.body.data?.user.id).toBe("1");
         expect(checkResponse.body.data?.user.username).toBe("newUser");
     });
@@ -303,7 +314,8 @@ describe("an authorized user", () => {
                 }
             }
         });
-        expect(response.body.data?.errors).toBeUndefined();
+
+        expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.updateUser.success).toBe(true);
 
         // Login again - this should fail
@@ -317,7 +329,7 @@ describe("an authorized user", () => {
             variables: { userData: userData[0] }
         });
 
-        expect(loginResponse.body.data?.errors).toBeUndefined();
+        expect(loginResponse.body.errors).toBeUndefined();
         expect(loginResponse.body.data?.login.token).toBeNull();
         expect(loginResponse.body.data?.login.failureMessage).toBe(
             "Invalid user or password."
@@ -332,7 +344,8 @@ describe("an authorized user", () => {
                 }
             }`
         });
-        expect(response.body.data?.errors).toBeUndefined();
+
+        expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.isLoggedIn.success).toBe(true);
     });
 });

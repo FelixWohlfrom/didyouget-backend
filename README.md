@@ -29,10 +29,12 @@ There are several variables available, which will be described the following cha
 
 For the database, the variables to configure depend on the backend you are using. E.g. if you use a sqlite database, you need to provide different variables then for mariadb.
 
-``DB_DIALECT`` The database backend to use. Currently *sqlite* and *mariadb* are actively supported. For others, pull requests are appreciated. For a full overview about possible values, please check the dialects supported by [sequelize](https://sequelize.org/api/v6/class/src/sequelize.js~sequelize#instance-constructor-constructor).
-Default to *sqlite*.
+``DB_TYPE`` The database backend to use. Currently *better-sqlite3* and *mariadb* are actively supported. For others, pull requests are appreciated. For a full overview about possible values, please check the dialects supported by [typeorm](https://typeorm.io/docs/data-source/data-source-options/).
+Default to *better-sqlite3*.
 
-``DB_NAME`` The name of the database to use.
+``DB_NAME`` The name of the database to use. In case of sqlite, the name of the database file.
+            Use *:memory:* for in-memory database in sqlite.
+            Defaults to *data/database.sqlite*
 
 ``DB_USER`` The username to use for authentication at the database server.
 
@@ -42,4 +44,5 @@ Default to *sqlite*.
 
 ``DB_PORT`` The port on which the database server is listening. Only required for *mariadb* dialect. Defaults to *3306*.
 
-``DB_STORAGE`` The location at which the sqlite database should be stored. Use *:memory:* for in-memory database. Only required for *sqlite* dialect. Defaults to *data/database.sqlite*.
+``SYNCHRONIZE`` If the databas schema should be synchronized. *If set to `true`, the data will be wiped*. Use only during
+                initial setup.
