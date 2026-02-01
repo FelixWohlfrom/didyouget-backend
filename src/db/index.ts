@@ -8,29 +8,28 @@ import { ListItem } from "./model/ListItem";
 let database: DataSource | null = null;
 
 function getDataConfig(): DataSourceOptions {
-    switch (dbConfig.DB_TYPE) {
-        case "better-sqlite3":
-            return {
-                type: "better-sqlite3",
-                database: dbConfig.DB_NAME,
-                synchronize: dbConfig.SYNCHRONIZE,
-                entities: [Device, User, ShoppingList, ListItem]
-            };
-        case "mysql":
-            return {
-                type: "mysql",
-                host: dbConfig.DB_HOST,
-                port: dbConfig.DB_PORT,
-                database: dbConfig.DB_NAME,
-                synchronize: dbConfig.SYNCHRONIZE,
-                entities: [Device, User, ShoppingList, ListItem]
-            };
+    if (dbConfig.DB_TYPE === "better-sqlite3") {
+        return {
+            type: "better-sqlite3",
+            database: dbConfig.DB_NAME,
+            synchronize: dbConfig.SYNCHRONIZE,
+            entities: [Device, User, ShoppingList, ListItem]
+        };
+    } else if (dbConfig.DB_TYPE === "mysql") {
+        return {
+            type: "mysql",
+            host: dbConfig.DB_HOST,
+            port: dbConfig.DB_PORT,
+            database: dbConfig.DB_NAME,
+            synchronize: dbConfig.SYNCHRONIZE,
+            entities: [Device, User, ShoppingList, ListItem]
+        };
     }
 
     throw new Error("Unknown database type");
 }
 
-async function initDatabaseConnection() {
+function initDatabaseConnection() {
     const database = new DataSource(getDataConfig());
     return database.initialize();
 }
