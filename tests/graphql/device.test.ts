@@ -34,6 +34,7 @@ describe("an unauthorized user", () => {
                 }
             }`
         });
+
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
 
@@ -46,6 +47,7 @@ describe("an unauthorized user", () => {
             }`,
             variables: { deviceInput: { device: "testDevice" } }
         });
+
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
 });
@@ -66,6 +68,8 @@ describe("an authorized user", () => {
                 }
             }`
         });
+
+        expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.devices[0].name).toBe("");
         expect(response.body.data?.devices[0].loggedin).toBe(true);
         expect(response.body.data?.devices[0].firstSeen).toBeTruthy();
@@ -83,6 +87,8 @@ describe("an authorized user", () => {
             }`,
             variables: { deviceInput: { device: "testDevice" } }
         });
+
+        expect(responseUpdate.body.errors).toBeUndefined();
         expect(responseUpdate.body.data?.updateDeviceName.success).toBe(true);
 
         // Verify that the update was successful
@@ -94,6 +100,8 @@ describe("an authorized user", () => {
                 }
             }`
         });
+
+        expect(responseCheck.body.errors).toBeUndefined();
         expect(responseCheck.body.data?.devices[0].name).toBe("testDevice");
         expect(responseCheck.body.data?.devices[0].loggedin).toBe(true);
         expect(responseCheck.body.data?.devices).toHaveLength(1);

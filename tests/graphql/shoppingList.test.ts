@@ -1,5 +1,6 @@
-import { Dialect } from "sequelize";
-import { databaseConnection } from "../../src/db";
+import { DataSource } from "typeorm";
+import { getDatabase } from "../../src/db";
+import { ListItem } from "../../src/db/model/ListItem";
 import { ShoppingList } from "../../src/db/model/Shoppinglist";
 import {
     setAuthToken,
@@ -11,13 +12,16 @@ import {
     addShoppingList,
     addShoppingListItem
 } from "./common";
-import { ListItem } from "../../src/db/model/ListItem";
+
+let db: DataSource | null = null;
 
 // before the tests we spin up a new Apollo Server
 beforeAll(async () => {
     await initServer();
     await registerUser();
     await registerUser(1);
+
+    db = await getDatabase();
 });
 
 // after the tests we'll stop the server
@@ -35,7 +39,7 @@ describe("an unauthorized user", () => {
             query: `query ShoppingList {
                 shoppingLists {
                     id
-                    owner
+                    ownerId
                     name
                 }
             }`
@@ -48,7 +52,7 @@ describe("an unauthorized user", () => {
             query: `mutation AddShoppingList($addShoppingListInput: addShoppingListInput!) {
                 addShoppingList(input: $addShoppingListInput) {
                     id
-                    owner
+                    ownerId
                     name
                 }
             }`,
@@ -90,18 +94,26 @@ describe("an unauthorized user", () => {
 
 describe("an authorized user", () => {
     beforeEach(async () => {
+        if (!db) return;
+
         await login();
 
         // Reset shopping lists
-        await ShoppingList.truncate();
-        // Workaround for https://github.com/sequelize/sequelize/issues/11152
-        if ((databaseConnection.getDialect() as Dialect) === "sqlite") {
-            databaseConnection.query(
-                "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME=:tableName",
-                {
-                    replacements: { tableName: ShoppingList.getTableName() }
-                }
-            );
+        await db.getRepository(ShoppingList).clear();
+        // Workaround for https://github.com/typeorm/typeorm/issues/4533
+        if (db.options.type.includes("sqlite")) {
+            await db
+                .createQueryRunner()
+                .query(
+                    "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME=:tableName",
+                    [
+                        {
+                            tableName:
+                                db.getRepository(ShoppingList).metadata
+                                    .tableName
+                        }
+                    ]
+                );
         }
 
         // Make sure we have our test list in the db
@@ -114,7 +126,7 @@ describe("an authorized user", () => {
             query: `query ShoppingList {
                 shoppingLists {
                     id
-                    owner
+                    ownerId
                     name
                     listItems {
                         id
@@ -122,8 +134,10 @@ describe("an authorized user", () => {
                 }
             }`
         });
+
+        expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.shoppingLists[0].id).toBe("1");
-        expect(response.body.data?.shoppingLists[0].owner).toBe("1");
+        expect(response.body.data?.shoppingLists[0].ownerId).toBe("1");
         expect(response.body.data?.shoppingLists[0].name).toBe("testList");
         expect(response.body.data?.shoppingLists[0].listItems).toStrictEqual(
             []
@@ -137,7 +151,7 @@ describe("an authorized user", () => {
             query: `mutation AddShoppingList($addShoppingListInput: addShoppingListInput!) {
                 addShoppingList(input: $addShoppingListInput) {
                     id
-                    owner
+                    ownerId
                     name
                     listItems {
                         id
@@ -149,7 +163,7 @@ describe("an authorized user", () => {
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.addShoppingList.id).toBe("2");
-        expect(response.body.data?.addShoppingList.owner).toBe("1");
+        expect(response.body.data?.addShoppingList.ownerId).toBe("1");
         expect(response.body.data?.addShoppingList.name).toBe("secondList");
         expect(response.body.data?.addShoppingList.listItems).toStrictEqual([]);
 
@@ -158,7 +172,7 @@ describe("an authorized user", () => {
             query: `query ShoppingList {
                 shoppingLists {
                     id
-                    owner
+                    ownerId
                     name
                     listItems {
                         id
@@ -169,13 +183,13 @@ describe("an authorized user", () => {
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
             {
                 id: "1",
-                owner: "1",
+                ownerId: "1",
                 name: "testList",
                 listItems: []
             },
             {
                 id: "2",
-                owner: "1",
+                ownerId: "1",
                 name: "secondList",
                 listItems: []
             }
@@ -210,7 +224,7 @@ describe("an authorized user", () => {
             query: `query ShoppingList {
                 shoppingLists {
                     id
-                    owner
+                    ownerId
                     name
                     listItems {
                         id
@@ -222,13 +236,13 @@ describe("an authorized user", () => {
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
             {
                 id: "1",
-                owner: "1",
+                ownerId: "1",
                 name: "testList",
                 listItems: []
             },
             {
                 id: "2",
-                owner: "1",
+                ownerId: "1",
                 name: "updatedValue",
                 listItems: []
             }
@@ -259,7 +273,7 @@ describe("an authorized user", () => {
             query: `query ShoppingList {
                 shoppingLists {
                     id
-                    owner
+                    ownerId
                     name
                     listItems {
                         id
@@ -271,7 +285,7 @@ describe("an authorized user", () => {
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
             {
                 id: "1",
-                owner: "1",
+                ownerId: "1",
                 name: "testList",
                 listItems: []
             }
@@ -307,7 +321,7 @@ describe("an authorized user", () => {
             query: `query ShoppingList {
                 shoppingLists {
                     id
-                    owner
+                    ownerId
                     name
                     listItems {
                         id
@@ -319,7 +333,7 @@ describe("an authorized user", () => {
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
             {
                 id: "1",
-                owner: "1",
+                ownerId: "1",
                 name: "testList",
                 listItems: []
             }
@@ -355,7 +369,7 @@ describe("an authorized user", () => {
         // Make sure that all list items are deleted.
         // We need to read this information directly from db, since we don't have
         // a dedicaded api for list items only.
-        const listItems = await ListItem.findAll();
+        const listItems = await db!.getRepository(ListItem).find();
         expect(listItems).toHaveLength(1);
 
         // Verify that correct items are now returned
@@ -363,7 +377,7 @@ describe("an authorized user", () => {
             query: `query ShoppingList {
                 shoppingLists {
                     id
-                    owner
+                    ownerId
                     name
                     listItems {
                         id
@@ -377,7 +391,7 @@ describe("an authorized user", () => {
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
             {
                 id: "1",
-                owner: "1",
+                ownerId: "1",
                 name: "testList",
                 listItems: [
                     {
@@ -419,7 +433,7 @@ describe("an authorized user", () => {
             query: `query ShoppingList {
                 shoppingLists {
                     id
-                    owner
+                    ownerId
                     name
                     listItems {
                         id
@@ -428,10 +442,11 @@ describe("an authorized user", () => {
             }`
         });
 
+        expect(response.body.errors).toBeUndefined();
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
             {
                 id: "1",
-                owner: "1",
+                ownerId: "1",
                 name: "testList",
                 listItems: []
             }
@@ -462,7 +477,7 @@ describe("an authorized user", () => {
             query: `query ShoppingList {
                 shoppingLists {
                     id
-                    owner
+                    ownerId
                     name
                     listItems {
                         id
@@ -471,10 +486,11 @@ describe("an authorized user", () => {
             }`
         });
 
+        expect(response.body.errors).toBeUndefined();
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
             {
                 id: "1",
-                owner: "1",
+                ownerId: "1",
                 name: "testList",
                 listItems: []
             }

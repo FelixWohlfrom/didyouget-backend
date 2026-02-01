@@ -1,11 +1,12 @@
 import { User } from "../../../../db/model/User";
 import { envHandler } from "../../../../utils/envHandler";
 import { hashPassword } from "../../../../utils/auth/hashPassword";
-import { UniqueConstraintError } from "sequelize";
+import { DataSource, TypeORMError } from "typeorm";
 
 export const register = async (
     _parent: object,
-    args: { input: { username: string; password: string } }
+    args: { input: { username: string; password: string } },
+    context: { db: DataSource }
 ) => {
     const { username, password } = args.input;
 
@@ -19,13 +20,16 @@ export const register = async (
     }
 
     try {
-        await User.create({
+        await context.db.getRepository(User).insert({
             username: username,
             password: hashedPassword
         });
     } catch (exception) {
         let failureDetails = exception;
-        if (exception instanceof UniqueConstraintError) {
+        if (
+            exception instanceof TypeORMError &&
+            exception.message.toLowerCase().includes("unique")
+        ) {
             failureDetails = "User already exists.";
         }
 

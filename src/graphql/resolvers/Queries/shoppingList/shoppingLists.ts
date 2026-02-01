@@ -1,16 +1,17 @@
-import { ListItem } from "../../../../db/model/ListItem";
+import { DataSource } from "typeorm";
 import { ShoppingList } from "../../../../db/model/Shoppinglist";
 import { DidYouGetLoginData } from "../../../../utils/auth/model";
 
 export const shoppingLists = async (
     _parent: object,
     _args: object,
-    context: { auth: DidYouGetLoginData }
+    context: { auth: DidYouGetLoginData; db: DataSource }
 ) => {
-    const result = await ShoppingList.findAll({
-        where: { owner: context.auth.userid },
-        include: ListItem,
-        order: [[ListItem, "id", "ASC"]]
+    return context.db.getRepository(ShoppingList).find({
+        where: { ownerId: context.auth.userid },
+        relations: {
+            listItems: true
+        },
+        order: { id: "ASC", listItems: { id: "ASC" } }
     });
-    return result;
 };

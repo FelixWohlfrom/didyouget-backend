@@ -1,4 +1,5 @@
 import * as dotenv from "dotenv";
+import "reflect-metadata"; // This is required for typeorm
 
 dotenv.config();
 

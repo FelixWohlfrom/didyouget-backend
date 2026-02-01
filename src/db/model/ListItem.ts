@@ -1,54 +1,27 @@
-import {
-    DataTypes,
-    Model,
-    InferAttributes,
-    InferCreationAttributes,
-    ForeignKey,
-    CreationOptional
-} from "sequelize";
-
-import { databaseConnection } from "../index";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ShoppingList } from "./Shoppinglist";
 
 /**
  * Describes an item of a shopping list
  */
-class ListItem extends Model<
-    InferAttributes<ListItem>,
-    InferCreationAttributes<ListItem>
-> {
-    // id can be undefined during creation when using `autoIncrement`
-    declare id: CreationOptional<number>;
+@Entity()
+export class ListItem {
+    @PrimaryGeneratedColumn()
+    declare id: number;
 
+    @Column()
     declare value: string;
-    declare bought: CreationOptional<boolean>;
 
-    declare listId: ForeignKey<number>;
+    @Column({ nullable: false, default: false })
+    declare bought: boolean;
+
+    // Add column to return list id as described in
+    // https://typeorm.io/docs/relations/relations-faq/#how-to-use-relation-id-without-joining-relation
+    @Column({ nullable: true })
+    declare listId: number;
+
+    @ManyToOne(() => ShoppingList, (shoppingList) => shoppingList.listItems, {
+        onDelete: "CASCADE"
+    })
+    declare list: ShoppingList;
 }
-
-ListItem.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-            allowNull: false
-        },
-        value: {
-            type: DataTypes.STRING,
-            defaultValue: "",
-            allowNull: false
-        },
-        bought: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-            allowNull: false
-        }
-    },
-    {
-        sequelize: databaseConnection,
-        timestamps: false,
-        modelName: "listItem"
-    }
-);
-
-export { ListItem };

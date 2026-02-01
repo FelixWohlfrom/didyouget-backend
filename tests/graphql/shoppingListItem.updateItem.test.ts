@@ -1,5 +1,5 @@
-import { Dialect } from "sequelize";
-import { databaseConnection } from "../../src/db";
+import { DataSource } from "typeorm";
+import { getDatabase } from "../../src/db";
 import { ListItem } from "../../src/db/model/ListItem";
 import { ShoppingList } from "../../src/db/model/Shoppinglist";
 import {
@@ -13,12 +13,16 @@ import {
     addShoppingListItem
 } from "./common";
 
+let db: DataSource | null = null;
+
 // before the tests we spin up a new Apollo Server
 beforeAll(async () => {
     await initServer();
     await registerUser();
     await login();
     await addShoppingList();
+
+    db = await getDatabase();
 });
 
 // after the tests we'll stop the server
@@ -53,22 +57,29 @@ describe("an unauthorized user", () => {
 
 describe("an authorized user", () => {
     beforeEach(async () => {
+        if (!db) return;
+
         await login();
 
         // Reset shopping lists and list items
-        await ShoppingList.truncate();
-        await ListItem.truncate();
-        // Workaround for https://github.com/sequelize/sequelize/issues/11152
-        if ((databaseConnection.getDialect() as Dialect) === "sqlite") {
-            await databaseConnection.query(
-                "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME IN (:firstTable, :secondTable)",
-                {
-                    replacements: {
-                        firstTable: ShoppingList.getTableName(),
-                        secondTable: ListItem.getTableName()
-                    }
-                }
-            );
+        await db.getRepository(ShoppingList).clear();
+        await db.getRepository(ListItem).clear();
+        // Workaround for https://github.com/typeorm/typeorm/issues/4533
+        if (db.options.type.includes("sqlite")) {
+            await db
+                .createQueryRunner()
+                .query(
+                    "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME IN (:firstTable, :secondTable)",
+                    [
+                        {
+                            firstTable:
+                                db.getRepository(ShoppingList).metadata
+                                    .tableName,
+                            secondTable:
+                                db.getRepository(ListItem).metadata.tableName
+                        }
+                    ]
+                );
         }
 
         // Add the shopping list again

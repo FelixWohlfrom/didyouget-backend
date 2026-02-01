@@ -1,57 +1,24 @@
-import {
-    DataTypes,
-    Model,
-    InferAttributes,
-    InferCreationAttributes,
-    CreationOptional,
-    NonAttribute
-} from "sequelize";
-
-import { databaseConnection } from "../index";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Device } from "./Device";
 import { ShoppingList } from "./Shoppinglist";
 
 /**
  * Describes a user
  */
-class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-    // id can be undefined during creation when using `autoIncrement`
-    declare id: CreationOptional<number>;
+@Entity()
+export class User {
+    @PrimaryGeneratedColumn()
+    declare id: number;
 
+    @Column({ unique: true })
     declare username: string;
+
+    @Column()
     declare password: string;
 
-    declare devices: NonAttribute<Device[]>;
-    declare shoppingLists: NonAttribute<ShoppingList[]>;
+    @OneToMany(() => Device, (device) => device.user)
+    declare devices: Device[];
+
+    @OneToMany(() => ShoppingList, (shoppingList) => shoppingList.owner)
+    declare shoppingLists: ShoppingList[];
 }
-
-User.init(
-    {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-            allowNull: false
-        },
-        username: {
-            type: DataTypes.STRING,
-            unique: true,
-            allowNull: false
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false
-        }
-    },
-    {
-        sequelize: databaseConnection,
-        timestamps: false,
-        modelName: "user"
-    }
-);
-
-User.hasMany(Device);
-User.hasMany(ShoppingList, { foreignKey: "owner" });
-ShoppingList.belongsToMany(User, { through: "sharedWith" });
-
-export { User };
