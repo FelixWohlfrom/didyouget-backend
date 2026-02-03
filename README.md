@@ -29,7 +29,7 @@ There are several variables available, which will be described the following cha
 
 For the database, the variables to configure depend on the backend you are using. E.g. if you use a sqlite database, you need to provide different variables then for mariadb.
 
-``DB_TYPE`` The database backend to use. Currently *better-sqlite3* and *mariadb* are actively supported. For others, pull requests are appreciated. For a full overview about possible values, please check the dialects supported by [typeorm](https://typeorm.io/docs/data-source/data-source-options/).
+``DB_TYPE`` The database backend to use. Currently *better-sqlite3*, *mysql* and *mariadb* are actively supported. For others, pull requests are appreciated. For a full overview about possible values, please check the dialects supported by [typeorm](https://typeorm.io/docs/data-source/data-source-options/).
 Default to *better-sqlite3*.
 
 ``DB_NAME`` The name of the database to use. In case of sqlite, the name of the database file.
