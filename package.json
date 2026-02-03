@@ -53,7 +53,7 @@
     "graphql-scalars": "^1.25.0",
     "graphql-shield": "^7.6.5",
     "jsonwebtoken": "^9.0.3",
-    "mariadb": "^3.4.5",
+    "mysql2": "^3.16.3",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.28"
   }
