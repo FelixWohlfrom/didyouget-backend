@@ -4,9 +4,7 @@ import fastify from "fastify";
 import { typeDefs, resolvers } from "./graphql/index";
 import { permissions } from "./guards/index";
 import { createApolloServer } from "./apollo/index";
-import { databaseConnection } from "./db/index";
-import { envHandler } from "./utils/envHandler";
-import { Dialect } from "sequelize";
+import { getDatabase } from "./db/index";
 import fastifyApollo, {
     ApolloFastifyContextFunction
 } from "@as-integrations/fastify";
@@ -24,21 +22,13 @@ export const startApolloServer = async (host: string, port: number) => {
     const server = createApolloServer([permissions], app, schema);
     await server.start();
 
-    if (
-        envHandler.isDevelopmentInstance() &&
-        // sqlite dialect currently "forgets" foreign keys while altering,
-        // so we can't do this on every startup.
-        (databaseConnection.getDialect() as Dialect) !== "sqlite"
-    ) {
-        await databaseConnection.sync({ alter: true });
-    } else {
-        await databaseConnection.sync();
-    }
+    const db = await getDatabase();
 
     const contextLoader: ApolloFastifyContextFunction<AppContext> = async (
         request
     ) => ({
-        auth: getAuthData(request.headers)
+        auth: getAuthData(request.headers),
+        db: db
     });
 
     await app.register(fastifyApollo(server), { context: contextLoader });

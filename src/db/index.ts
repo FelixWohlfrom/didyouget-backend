@@ -1,17 +1,45 @@
-import { Dialect, Sequelize } from "sequelize";
-import dbConfig from "./config";
+import { DataSource, DataSourceOptions } from "typeorm";
+import { getConfig } from "./config";
+import { Device } from "./model/Device";
+import { User } from "./model/User";
+import { ShoppingList } from "./model/Shoppinglist";
+import { ListItem } from "./model/ListItem";
 
-export const databaseConnection = new Sequelize(
-    dbConfig.DB_NAME,
-    dbConfig.DB_USER,
-    dbConfig.DB_PASS,
-    {
-        host: dbConfig.DB_HOST,
-        port: dbConfig.DB_PORT,
-        dialect: dbConfig.DB_DIALECT as Dialect,
-        storage: dbConfig.DB_STORAGE, // This will only be used if the sqlite dialect is used
-        define: {
-            timestamps: false
-        }
+let database: DataSource | null = null;
+
+function getDataConfig(): DataSourceOptions {
+    const dbConfig = getConfig();
+    if (dbConfig.DB_TYPE === "better-sqlite3") {
+        return {
+            type: "better-sqlite3",
+            database: dbConfig.DB_NAME,
+            synchronize: dbConfig.SYNCHRONIZE,
+            entities: [Device, User, ShoppingList, ListItem]
+        };
+    } else if (dbConfig.DB_TYPE === "mysql") {
+        return {
+            type: "mysql",
+            host: dbConfig.DB_HOST,
+            port: dbConfig.DB_PORT,
+            database: dbConfig.DB_NAME,
+            synchronize: dbConfig.SYNCHRONIZE,
+            entities: [Device, User, ShoppingList, ListItem]
+        };
     }
-);
+
+    throw new Error("Unknown database type");
+}
+
+function initDatabaseConnection() {
+    const database = new DataSource(getDataConfig());
+    return database.initialize();
+}
+
+export async function getDatabase(): Promise<DataSource> {
+    database ??= await initDatabaseConnection();
+    return database;
+}
+
+export function resetDatabase() {
+    database = null;
+}

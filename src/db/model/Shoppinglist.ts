@@ -1,48 +1,35 @@
 import {
-    DataTypes,
-    Model,
-    InferAttributes,
-    InferCreationAttributes,
-    ForeignKey,
-    NonAttribute
-} from "sequelize";
+    Column,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn
+} from "typeorm";
 
-import { databaseConnection } from "../index";
 import { ListItem } from "./ListItem";
+import { User } from "./User";
 
 /**
  * Describes a shopping list
  */
-class ShoppingList extends Model<
-    InferAttributes<ShoppingList>,
-    InferCreationAttributes<ShoppingList>
-> {
+@Entity()
+export class ShoppingList {
+    @PrimaryGeneratedColumn()
+    declare id: number;
+
+    @Column()
     declare name: string;
 
-    declare owner: ForeignKey<number>;
+    // Add column to return owner id as described in
+    // https://typeorm.io/docs/relations/relations-faq/#how-to-use-relation-id-without-joining-relation
+    @Column({ nullable: true })
+    declare ownerId: number;
 
-    declare listItems: NonAttribute<ListItem[]>;
+    @ManyToOne(() => User, (user) => user.shoppingLists, {
+        onDelete: "CASCADE"
+    })
+    declare owner: User;
+
+    @OneToMany(() => ListItem, (listItem) => listItem.list)
+    declare listItems: ListItem[];
 }
-
-ShoppingList.init(
-    {
-        name: {
-            type: DataTypes.STRING,
-            defaultValue: "",
-            allowNull: false
-        }
-    },
-    {
-        sequelize: databaseConnection,
-        timestamps: false,
-        modelName: "list"
-    }
-);
-
-ShoppingList.hasMany(ListItem, {
-    foreignKey: "listId",
-    onDelete: "cascade",
-    hooks: true
-});
-
-export { ShoppingList };
