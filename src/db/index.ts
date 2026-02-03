@@ -16,7 +16,7 @@ function getDataConfig(): DataSourceOptions {
             synchronize: dbConfig.SYNCHRONIZE,
             entities: [Device, User, ShoppingList, ListItem]
         };
-    } else if (dbConfig.DB_TYPE === "mysql") {
+    } else if (dbConfig.DB_TYPE === "mysql" || dbConfig.DB_TYPE === "mariadb") {
         return {
             type: "mysql",
             host: dbConfig.DB_HOST,
