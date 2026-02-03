@@ -21,6 +21,8 @@ function getDataConfig(): DataSourceOptions {
             type: "mysql",
             host: dbConfig.DB_HOST,
             port: dbConfig.DB_PORT,
+            username: dbConfig.DB_USER,
+            password: dbConfig.DB_PASS,
             database: dbConfig.DB_NAME,
             synchronize: dbConfig.SYNCHRONIZE,
             entities: [Device, User, ShoppingList, ListItem]
