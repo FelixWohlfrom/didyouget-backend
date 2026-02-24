@@ -36,7 +36,6 @@ jobs:
         if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v5
         with:
-          flags: ${{ matrix.node-version }}
           token: ${{ secrets.CODECOV_SECRET }}
           report_type: test_results
           fail_ci_if_error: true
