@@ -12,4 +12,12 @@ export default defineConfig(
   [
     globalIgnores(['dist/*', '.jest/setEnvVars.js']),
   ],
+  {
+    plugins: {
+      '@stylistic': stylistic,
+    },
+    rules: {
+      'linebreak-style': ['error', 'unix'],
+    },
+  },
 )
