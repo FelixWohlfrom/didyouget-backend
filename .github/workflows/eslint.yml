@@ -34,7 +34,7 @@ jobs:
           npm ci
           npm install @microsoft/eslint-formatter-sarif@3.1.0
 
-      - name: Run ESLint with sarif output
+      - name: Run ESLint
         run: npm run lint --
           --format @microsoft/eslint-formatter-sarif 
           --output-file eslint-results.sarif
@@ -45,15 +45,3 @@ jobs:
         with:
           sarif_file: eslint-results.sarif
           wait-for-processing: true
-
-      - name: Run ESLint again with json output
-        run: npm run lint --
-          --format json
-          --output-file eslint_report.json
-        continue-on-error: true
-
-      - name: Annotate ESLint results
-        uses: ataylorme/eslint-annotate-action@v4
-        with:
-          github-token: ${{ secrets.ESLINT_SECRET }}
-          post-comment: true
