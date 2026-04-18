@@ -15,10 +15,12 @@ export default defineConfig(
   {
     plugins: {
       '@stylistic': stylistic,
-    },
-    rules: {
-      '@stylistic/linebreak-style': ['error', 'unix'],
-      '@stylistic/semi': ["error", "always"],
+        rules: {
+            "@stylistic/indent": ["error", 4],
+            "@stylistic/linebreak-style": ["error", "unix"],
+            "@stylistic/quotes": ["error", "double"],
+            "@stylistic/semi": ["error", "always"],
+        },
     },
   },
 )
