@@ -17,7 +17,8 @@ export default defineConfig(
       '@stylistic': stylistic,
     },
     rules: {
-      'linebreak-style': ['error', 'unix'],
+      '@stylistic/linebreak-style': ['error', 'unix'],
+      '@stylistic/semi': ["error", "always"],
     },
   },
 )
