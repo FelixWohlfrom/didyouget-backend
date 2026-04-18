@@ -19,6 +19,7 @@ export const createApolloServer = (
 
     let landingPage;
     if (envHandler.isDevelopmentInstance()) {
+        /* istanbul ignore next */ // Ignore for code coverage check
         landingPage = ApolloServerPluginLandingPageLocalDefault({
             embed: true,
         });
