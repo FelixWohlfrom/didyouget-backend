@@ -10,7 +10,7 @@ import {
     runGraphQlQuery,
     registerUser,
     addShoppingList,
-    addShoppingListItem
+    addShoppingListItem,
 } from "./common";
 
 let db: DataSource | null = null;
@@ -46,9 +46,9 @@ describe("an unauthorized user", () => {
             variables: {
                 updateShoppingListItemInput: {
                     shoppingListItemId: 1,
-                    newValue: "new value"
-                }
-            }
+                    newValue: "new value",
+                },
+            },
         });
 
         expect(response.body.errors[0].message).toBe("Not Authorised!");
@@ -76,9 +76,9 @@ describe("an authorized user", () => {
                                 db.getRepository(ShoppingList).metadata
                                     .tableName,
                             secondTable:
-                                db.getRepository(ListItem).metadata.tableName
-                        }
-                    ]
+                                db.getRepository(ListItem).metadata.tableName,
+                        },
+                    ],
                 );
         }
 
@@ -102,15 +102,15 @@ describe("an authorized user", () => {
             variables: {
                 updateShoppingListItemInput: {
                     shoppingListItemId: 1,
-                    newValue: "updated value"
-                }
-            }
+                    newValue: "updated value",
+                },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.updateShoppingListItem.success).toBe(true);
         expect(
-            response.body.data?.updateShoppingListItem.failureMessage
+            response.body.data?.updateShoppingListItem.failureMessage,
         ).toBeNull();
 
         // Verify that only remaining items are returned
@@ -123,7 +123,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -132,15 +132,15 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "updated value",
-                        bought: false
+                        bought: false,
                     },
                     {
                         id: "2",
                         value: "secondItem",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 
@@ -156,15 +156,15 @@ describe("an authorized user", () => {
                 updateShoppingListItemInput: {
                     shoppingListItemId: 1,
                     newValue: "updated value",
-                    bought: true
-                }
-            }
+                    bought: true,
+                },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.updateShoppingListItem.success).toBe(true);
         expect(
-            response.body.data?.updateShoppingListItem.failureMessage
+            response.body.data?.updateShoppingListItem.failureMessage,
         ).toBeNull();
 
         // Verify that only remaining items are returned
@@ -177,7 +177,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -186,15 +186,15 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "updated value",
-                        bought: true
+                        bought: true,
                     },
                     {
                         id: "2",
                         value: "secondItem",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 
@@ -209,15 +209,15 @@ describe("an authorized user", () => {
             variables: {
                 updateShoppingListItemInput: {
                     shoppingListItemId: 3,
-                    newValue: "updated value"
-                }
-            }
+                    newValue: "updated value",
+                },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.updateShoppingListItem.success).toBe(false);
         expect(response.body.data?.updateShoppingListItem.failureMessage).toBe(
-            "Unknown list item"
+            "Unknown list item",
         );
 
         // Verify that all items are now returned
@@ -230,7 +230,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -239,20 +239,20 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "listItem",
-                        bought: false
+                        bought: false,
                     },
                     {
                         id: "2",
                         value: "secondItem",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 
     it("should be able to update a shopping list item only from an own list", async () => {
-        // Login as second user
+    // Login as second user
         await registerUser(1);
         await login(1, true);
         await addShoppingList("secondList");
@@ -270,15 +270,15 @@ describe("an authorized user", () => {
                 updateShoppingListItemInput: {
                     shoppingListItemId: 1,
                     newValue: "updated value",
-                    bought: true
-                }
-            }
+                    bought: true,
+                },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.updateShoppingListItem.success).toBe(false);
         expect(response.body.data?.updateShoppingListItem.failureMessage).toBe(
-            "Unknown list item"
+            "Unknown list item",
         );
 
         // Verify that all items are now not added for first user
@@ -292,7 +292,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -301,15 +301,15 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "listItem",
-                        bought: false
+                        bought: false,
                     },
                     {
                         id: "2",
                         value: "secondItem",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 });

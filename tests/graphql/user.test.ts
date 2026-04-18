@@ -8,7 +8,7 @@ import {
     stopServer,
     login,
     runGraphQlQuery,
-    registerUser
+    registerUser,
 } from "./common";
 
 // before the tests we spin up a new Apollo Server
@@ -44,14 +44,14 @@ describe("an unauthorized user", () => {
                 }
             }`,
             variables: {
-                userData: { username: "unknown", password: "unknown" }
-            }
+                userData: { username: "unknown", password: "unknown" },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.login.token).toBeNull();
         expect(response.body.data?.login.failureMessage).toBe(
-            "Invalid user or password."
+            "Invalid user or password.",
         );
     });
 
@@ -62,7 +62,7 @@ describe("an unauthorized user", () => {
                     success
                 }
             }`,
-            variables: { userData: userData[0] }
+            variables: { userData: userData[0] },
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -77,13 +77,13 @@ describe("an unauthorized user", () => {
                     failureMessage
                 }
             }`,
-            variables: { userData: userData[0] }
+            variables: { userData: userData[0] },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.register.success).toBe(false);
         expect(response.body.data?.register.failureMessage).toBe(
-            "Failed to create the user. User already exists."
+            "Failed to create the user. User already exists.",
         );
     });
 
@@ -96,7 +96,7 @@ describe("an unauthorized user", () => {
                     success
                 }
             }`,
-            variables: { userData: userData[1] }
+            variables: { userData: userData[1] },
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -113,13 +113,13 @@ describe("an unauthorized user", () => {
                     failureMessage
                 }
             }`,
-            variables: { userData: userData[0] }
+            variables: { userData: userData[0] },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.register.success).toBe(false);
         expect(response.body.data?.register.failureMessage).toBe(
-            "User registration is disabled by administrator."
+            "User registration is disabled by administrator.",
         );
     });
 
@@ -135,7 +135,7 @@ describe("an unauthorized user", () => {
                     id
                     username
                 }
-            }`
+            }`,
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
@@ -146,7 +146,7 @@ describe("an unauthorized user", () => {
                 isLoggedIn {
                     success
                 }
-            }`
+            }`,
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
@@ -158,7 +158,7 @@ describe("an unauthorized user", () => {
                     id
                     username
                 }
-            }`
+            }`,
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
@@ -171,8 +171,8 @@ describe("an unauthorized user", () => {
                 }
             }`,
             variables: {
-                updateUserInput: { username: "newUser" }
-            }
+                updateUserInput: { username: "newUser" },
+            },
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
@@ -180,7 +180,7 @@ describe("an unauthorized user", () => {
 
 describe("an authorized user", () => {
     beforeAll(async () => {
-        // Reset registered user
+    // Reset registered user
         const db = await getDatabase();
         await db.getRepository(User).clear();
         // Workaround for https://github.com/typeorm/typeorm/issues/4533
@@ -189,7 +189,7 @@ describe("an authorized user", () => {
                 .createQueryRunner()
                 .query(
                     "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME=:tableName",
-                    [{ tableName: db.getRepository(User).metadata.tableName }]
+                    [{ tableName: db.getRepository(User).metadata.tableName }],
                 );
         }
 
@@ -206,7 +206,7 @@ describe("an authorized user", () => {
                 logout {
                     success
                 }
-            }`
+            }`,
         });
 
         expect(response.body.data?.logout.success).toBe(true);
@@ -220,7 +220,7 @@ describe("an authorized user", () => {
                     id
                     username
                 }
-            }`
+            }`,
         });
 
         expect(response.body.data?.users[0].id).toBe("1");
@@ -235,7 +235,7 @@ describe("an authorized user", () => {
                     id
                     username
                 }
-            }`
+            }`,
         });
 
         expect(response.body.data?.user.id).toBe("1");
@@ -249,7 +249,7 @@ describe("an authorized user", () => {
                     id
                     username
                 }
-            }`
+            }`,
         });
 
         expect(response.body.data?.user.id).toBe("1");
@@ -263,14 +263,14 @@ describe("an authorized user", () => {
                     id
                     username
                 }
-            }`
+            }`,
         });
 
         expect(response.body.data?.user).toBeNull();
     });
 
     it("should be able to update the username", async () => {
-        // Update username
+    // Update username
         const response = await runGraphQlQuery({
             query: `mutation UpdateUser($updateUserInput: updateUserInput!) {
                 updateUser(input: $updateUserInput) {
@@ -278,8 +278,8 @@ describe("an authorized user", () => {
                 }
             }`,
             variables: {
-                updateUserInput: { username: "newUser" }
-            }
+                updateUserInput: { username: "newUser" },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -292,7 +292,7 @@ describe("an authorized user", () => {
                     id
                     username
                 }
-            }`
+            }`,
         });
 
         expect(checkResponse.body.data?.user.id).toBe("1");
@@ -300,7 +300,7 @@ describe("an authorized user", () => {
     });
 
     it("should not be able to login after password update", async () => {
-        // Update the password
+    // Update the password
         const response = await runGraphQlQuery({
             query: `mutation UpdateUser($updateUserInput: updateUserInput!) {
                 updateUser(input: $updateUserInput) {
@@ -310,9 +310,9 @@ describe("an authorized user", () => {
             variables: {
                 updateUserInput: {
                     username: userData[0].username,
-                    password: "secureNewPassword"
-                }
-            }
+                    password: "secureNewPassword",
+                },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -326,13 +326,13 @@ describe("an authorized user", () => {
                     failureMessage
                 }
             }`,
-            variables: { userData: userData[0] }
+            variables: { userData: userData[0] },
         });
 
         expect(loginResponse.body.errors).toBeUndefined();
         expect(loginResponse.body.data?.login.token).toBeNull();
         expect(loginResponse.body.data?.login.failureMessage).toBe(
-            "Invalid user or password."
+            "Invalid user or password.",
         );
     });
 
@@ -342,7 +342,7 @@ describe("an authorized user", () => {
                 isLoggedIn {
                     success
                 }
-            }`
+            }`,
         });
 
         expect(response.body.errors).toBeUndefined();

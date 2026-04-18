@@ -4,7 +4,7 @@ import {
     Entity,
     ManyToOne,
     PrimaryGeneratedColumn,
-    UpdateDateColumn
+    UpdateDateColumn,
 } from "typeorm";
 
 import { User } from "./User";
@@ -37,6 +37,6 @@ export class Device {
     @Column({ nullable: true })
     declare userId: number;
 
-    @ManyToOne(() => User, (user) => user.devices, { onDelete: "CASCADE" })
+    @ManyToOne(() => User, user => user.devices, { onDelete: "CASCADE" })
     declare user: User;
 }

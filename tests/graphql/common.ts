@@ -12,12 +12,12 @@ import { startApolloServer } from "../../src/server";
 const userData = [
     {
         username: "TestUser",
-        password: "1234"
+        password: "1234",
     },
     {
         username: "TestUser2",
-        password: "5678"
-    }
+        password: "5678",
+    },
 ];
 
 // The test server instance
@@ -40,7 +40,7 @@ function setAuthToken(newToken: string | undefined) {
  *
  * @param {number} credentialsId The credentials to use for log in. Default 0.
  */
-async function registerUser(credentialsId: number = 0) {
+async function registerUser(credentialsId = 0) {
     // Make sure we have our test user in the db
     const response = await runGraphQlQuery({
         query: `mutation registerUser($userData: userInput!) {
@@ -48,7 +48,7 @@ async function registerUser(credentialsId: number = 0) {
                 success
             }
         }`,
-        variables: { userData: userData[credentialsId] }
+        variables: { userData: userData[credentialsId] },
     });
 
     expect(response.body.errors).toBeUndefined();
@@ -60,7 +60,7 @@ async function registerUser(credentialsId: number = 0) {
  *
  * @param {string} name An optional name for the list.
  */
-async function addShoppingList(name: string = "testList") {
+async function addShoppingList(name = "testList") {
     // Make sure we have a test list in the db
     const response = await runGraphQlQuery({
         query: `mutation AddShoppingList($addShoppingListInput: addShoppingListInput!) {
@@ -68,7 +68,7 @@ async function addShoppingList(name: string = "testList") {
                 id
             }
         }`,
-        variables: { addShoppingListInput: { name: name } }
+        variables: { addShoppingListInput: { name: name } },
     });
 
     expect(response.body.errors).toBeUndefined();
@@ -82,8 +82,8 @@ async function addShoppingList(name: string = "testList") {
  * @param {string} value An optional name for the list item.
  */
 async function addShoppingListItem(
-    shoppingListId: number = 1,
-    value: string = "listItem"
+    shoppingListId = 1,
+    value = "listItem",
 ) {
     // Make sure we have a test list item in the db
     const response = await runGraphQlQuery({
@@ -95,9 +95,9 @@ async function addShoppingListItem(
         variables: {
             addShoppingListItemInput: {
                 shoppingListId: shoppingListId,
-                value: value
-            }
-        }
+                value: value,
+            },
+        },
     });
     expect(response.body.errors).toBeUndefined();
 }
@@ -108,7 +108,7 @@ async function addShoppingListItem(
  * @param {number} credentialsId The credentials to use for log in. Default 0.
  * @param {boolean} force Force login, even if we are already logged in.
  */
-async function login(credentialsId: number = 0, force: boolean = false) {
+async function login(credentialsId = 0, force = false) {
     if (!authToken || force) {
         const response = await runGraphQlQuery({
             query: `mutation login($userData: userInput!) {
@@ -116,7 +116,7 @@ async function login(credentialsId: number = 0, force: boolean = false) {
                     token
                 }
             }`,
-            variables: { userData: userData[credentialsId] }
+            variables: { userData: userData[credentialsId] },
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -137,7 +137,7 @@ async function login(credentialsId: number = 0, force: boolean = false) {
 function runGraphQlQuery(queryData: object): request.Test {
     // send our request to the url of the test server
     const req = request(
-        `http://localhost:${(server.address() as AddressInfo).port}`
+        `http://localhost:${(server.address() as AddressInfo).port}`,
     ).post("/graphql");
     if (authToken !== undefined) {
         req.set("Authorization", `Bearer ${authToken}`);
@@ -169,5 +169,5 @@ export {
     login,
     addShoppingList,
     addShoppingListItem,
-    runGraphQlQuery
+    runGraphQlQuery,
 };

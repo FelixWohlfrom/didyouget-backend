@@ -5,13 +5,13 @@ import { DidYouGetLoginData } from "../../../../utils/auth/model";
 export const shoppingLists = async (
     _parent: object,
     _args: object,
-    context: { auth: DidYouGetLoginData; db: DataSource }
+    context: { auth: DidYouGetLoginData, db: DataSource },
 ) => {
     return context.db.getRepository(ShoppingList).find({
         where: { ownerId: context.auth.userid },
         relations: {
-            listItems: true
+            listItems: true,
         },
-        order: { id: "ASC", listItems: { id: "ASC" } }
+        order: { id: "ASC", listItems: { id: "ASC" } },
     });
 };

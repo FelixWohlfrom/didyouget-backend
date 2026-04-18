@@ -1,7 +1,7 @@
 import { ApolloServer } from "@apollo/server";
 import {
     ApolloServerPluginLandingPageLocalDefault,
-    ApolloServerPluginLandingPageProductionDefault
+    ApolloServerPluginLandingPageProductionDefault,
 } from "@apollo/server/plugin/landingPage/default";
 import { applyMiddleware } from "graphql-middleware";
 import { GraphQLSchema } from "graphql";
@@ -13,19 +13,19 @@ import { AppContext } from "./model";
 export const createApolloServer = (
     midlewares: [object],
     app: FastifyInstance,
-    schema: GraphQLSchema
+    schema: GraphQLSchema,
 ) => {
     const schemaWithPermissions = applyMiddleware(schema, ...midlewares);
 
-    let landingPage = undefined;
+    let landingPage;
     if (envHandler.isDevelopmentInstance()) {
-        /* istanbul ignore next */
         landingPage = ApolloServerPluginLandingPageLocalDefault({
-            embed: true
+            embed: true,
         });
-    } else {
+    }
+    else {
         landingPage = ApolloServerPluginLandingPageProductionDefault({
-            footer: false
+            footer: false,
         });
     }
 
@@ -33,6 +33,6 @@ export const createApolloServer = (
         schema: schemaWithPermissions,
         cache: "bounded",
         csrfPrevention: true,
-        plugins: [fastifyApolloDrainPlugin(app), landingPage]
+        plugins: [fastifyApolloDrainPlugin(app), landingPage],
     });
 };

@@ -5,7 +5,7 @@ import { DidYouGetLoginData } from "../../../../utils/auth/model";
 export const logout = async (
     _parent: object,
     _args: object,
-    context: { auth: DidYouGetLoginData; db: DataSource }
+    context: { auth: DidYouGetLoginData, db: DataSource },
 ) => {
     if (context.auth.deviceToken) {
         await context.db
@@ -13,12 +13,12 @@ export const logout = async (
             .update(
                 [
                     { token: context.auth.deviceToken },
-                    { userId: context.auth.userid }
+                    { userId: context.auth.userid },
                 ],
-                { loggedin: false }
+                { loggedin: false },
             );
     }
     return {
-        success: true
+        success: true,
     };
 };

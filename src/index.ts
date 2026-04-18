@@ -10,15 +10,16 @@ const boostrap = async () => {
     const port = Number.parseInt(envHandler.get("PORT", "4000"));
     const host = envHandler.get(
         "HOST",
-        envHandler.isDevelopmentInstance() ? "localhost" : undefined
+        envHandler.isDevelopmentInstance() ? "localhost" : undefined,
     );
 
     try {
         await startApolloServer(host, port);
         console.log(
-            `[Apollo Server]: Up and Running at http://localhost:${port}/graphql 🚀`
+            `[Apollo Server]: Up and Running at http://localhost:${port}/graphql 🚀`,
         );
-    } catch (error) {
+    }
+    catch (error) {
         console.log("[Apollo Server]: Process exiting ...");
         console.log(`[Apollo Server]: ${error}`);
         process.exit(1);
