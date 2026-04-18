@@ -3,7 +3,7 @@ import {
     Entity,
     ManyToOne,
     OneToMany,
-    PrimaryGeneratedColumn
+    PrimaryGeneratedColumn,
 } from "typeorm";
 
 import { ListItem } from "./ListItem";
@@ -25,11 +25,11 @@ export class ShoppingList {
     @Column({ nullable: true })
     declare ownerId: number;
 
-    @ManyToOne(() => User, (user) => user.shoppingLists, {
-        onDelete: "CASCADE"
+    @ManyToOne(() => User, user => user.shoppingLists, {
+        onDelete: "CASCADE",
     })
     declare owner: User;
 
-    @OneToMany(() => ListItem, (listItem) => listItem.list)
+    @OneToMany(() => ListItem, listItem => listItem.list)
     declare listItems: ListItem[];
 }

@@ -30,7 +30,8 @@ describe("the database connection", () => {
 
         try {
             await getDatabase();
-        } catch (error_) {
+        }
+        catch (error_) {
             expect((error_ as Error).message).toBe("Unknown database type");
             return;
         }

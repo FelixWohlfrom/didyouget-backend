@@ -20,8 +20,8 @@ export class ListItem {
     @Column({ nullable: true })
     declare listId: number;
 
-    @ManyToOne(() => ShoppingList, (shoppingList) => shoppingList.listItems, {
-        onDelete: "CASCADE"
+    @ManyToOne(() => ShoppingList, shoppingList => shoppingList.listItems, {
+        onDelete: "CASCADE",
     })
     declare list: ShoppingList;
 }

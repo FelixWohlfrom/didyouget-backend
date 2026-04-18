@@ -7,12 +7,12 @@ export const updateShoppingListItem = async (
     _parent: object,
     args: {
         input: {
-            shoppingListItemId: number;
-            newValue: string;
-            bought: boolean;
-        };
+            shoppingListItemId: number
+            newValue: string
+            bought: boolean
+        }
     },
-    context: { auth: DidYouGetLoginData; db: DataSource }
+    context: { auth: DidYouGetLoginData, db: DataSource },
 ) => {
     const { shoppingListItemId, newValue, bought } = args.input;
 
@@ -25,10 +25,10 @@ export const updateShoppingListItem = async (
 
     // we know that we only have valid links in our db, so either we have both
     // list item and list, or none
-    if (!listItem || list!.ownerId !== context.auth.userid) {
+    if (!listItem || list?.ownerId !== context.auth.userid) {
         return {
             success: false,
-            failureMessage: "Unknown list item"
+            failureMessage: "Unknown list item",
         };
     }
 

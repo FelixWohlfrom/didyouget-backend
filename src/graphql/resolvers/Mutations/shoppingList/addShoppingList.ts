@@ -5,7 +5,7 @@ import { DidYouGetLoginData } from "../../../../utils/auth/model";
 export const addShoppingList = async (
     _parent: object,
     args: { input: { name: string } },
-    context: { auth: DidYouGetLoginData; db: DataSource }
+    context: { auth: DidYouGetLoginData, db: DataSource },
 ) => {
     const { name } = args.input;
 

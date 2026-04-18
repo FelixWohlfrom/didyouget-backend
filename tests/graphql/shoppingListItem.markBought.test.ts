@@ -9,7 +9,7 @@ import {
     login,
     runGraphQlQuery,
     registerUser,
-    addShoppingList
+    addShoppingList,
 } from "./common";
 
 let db: DataSource | null = null;
@@ -34,9 +34,9 @@ beforeAll(async () => {
         variables: {
             addShoppingListItemInput: {
                 shoppingListId: 1,
-                value: "listItem"
-            }
-        }
+                value: "listItem",
+            },
+        },
     });
 
     expect(response.body.errors).toBeUndefined();
@@ -61,9 +61,9 @@ describe("an unauthorized user", () => {
             }`,
             variables: {
                 boughtShoppingListItemInput: {
-                    shoppingListItemId: 1
-                }
-            }
+                    shoppingListItemId: 1,
+                },
+            },
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
@@ -90,9 +90,9 @@ describe("an authorized user", () => {
                                 db.getRepository(ShoppingList).metadata
                                     .tableName,
                             secondTable:
-                                db.getRepository(ListItem).metadata.tableName
-                        }
-                    ]
+                                db.getRepository(ListItem).metadata.tableName,
+                        },
+                    ],
                 );
         }
 
@@ -109,15 +109,15 @@ describe("an authorized user", () => {
             variables: {
                 addShoppingListItemInput: {
                     shoppingListId: 1,
-                    value: "listItem"
-                }
-            }
+                    value: "listItem",
+                },
+            },
         });
         expect(response.body.errors).toBeUndefined();
     });
 
     it("should be able to mark a shopping list item as bought using default parameter", async () => {
-        // Mark item as bought
+    // Mark item as bought
         const response = await runGraphQlQuery({
             query: `mutation MarkShoppingListItemBought($boughtShoppingListItemInput: boughtShoppingListItemInput!) {
                 markShoppingListItemBought(input: $boughtShoppingListItemInput) {
@@ -126,9 +126,9 @@ describe("an authorized user", () => {
             }`,
             variables: {
                 boughtShoppingListItemInput: {
-                    shoppingListItemId: 1
-                }
-            }
+                    shoppingListItemId: 1,
+                },
+            },
         });
 
         const result = response.body.data?.markShoppingListItemBought;
@@ -145,7 +145,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -154,10 +154,10 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "listItem",
-                        bought: true
-                    }
-                ]
-            }
+                        bought: true,
+                    },
+                ],
+            },
         ]);
     });
 
@@ -174,9 +174,9 @@ describe("an authorized user", () => {
                 variables: {
                     boughtShoppingListItemInput: {
                         shoppingListItemId: 1,
-                        bought: explicitParameter
-                    }
-                }
+                        bought: explicitParameter,
+                    },
+                },
             });
 
             const result = response.body.data?.markShoppingListItemBought;
@@ -193,7 +193,7 @@ describe("an authorized user", () => {
                             bought
                         }
                     }
-                }`
+                }`,
             });
 
             expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -202,16 +202,16 @@ describe("an authorized user", () => {
                         {
                             id: "1",
                             value: "listItem",
-                            bought: explicitParameter
-                        }
-                    ]
-                }
+                            bought: explicitParameter,
+                        },
+                    ],
+                },
             ]);
-        }
+        },
     );
 
     it("should not be able to mark non existing items as bought", async () => {
-        // Add a new shopping list item to a non existing list
+    // Add a new shopping list item to a non existing list
         const response = await runGraphQlQuery({
             query: `mutation MarkShoppingListItemBought($boughtShoppingListItemInput: boughtShoppingListItemInput!) {
                 markShoppingListItemBought(input: $boughtShoppingListItemInput) {
@@ -220,9 +220,9 @@ describe("an authorized user", () => {
             }`,
             variables: {
                 boughtShoppingListItemInput: {
-                    shoppingListItemId: 2
-                }
-            }
+                    shoppingListItemId: 2,
+                },
+            },
         });
 
         const result = response.body.data?.markShoppingListItemBought;
@@ -231,7 +231,7 @@ describe("an authorized user", () => {
     });
 
     it("should be able to update item status only to an own item", async () => {
-        // Login as second user
+    // Login as second user
         await registerUser(1);
         await login(1, true);
 
@@ -244,9 +244,9 @@ describe("an authorized user", () => {
             }`,
             variables: {
                 boughtShoppingListItemInput: {
-                    shoppingListItemId: 1
-                }
-            }
+                    shoppingListItemId: 1,
+                },
+            },
         });
 
         const result = response.body.data?.markShoppingListItemBought;
@@ -264,7 +264,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -273,10 +273,10 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "listItem",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 });

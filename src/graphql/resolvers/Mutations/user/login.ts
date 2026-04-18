@@ -8,8 +8,8 @@ import { DataSource } from "typeorm";
 
 export const login = async (
     _parent: object,
-    args: { input: { username: string; password: string } },
-    context: { auth: DidYouGetLoginData | undefined; db: DataSource }
+    args: { input: { username: string, password: string } },
+    context: { auth: DidYouGetLoginData | undefined, db: DataSource },
 ) => {
     const { username, password } = args.input;
 
@@ -23,7 +23,7 @@ export const login = async (
 
     if (!user) {
         return {
-            failureMessage: failureMesage
+            failureMessage: failureMesage,
         };
     }
 
@@ -31,13 +31,13 @@ export const login = async (
 
     if (!isValidPassword) {
         return {
-            failureMessage: failureMesage
+            failureMessage: failureMesage,
         };
     }
 
     let device = await context.db.getRepository(Device).findOneBy({
         userId: user.id,
-        token: context.auth?.deviceToken ?? ""
+        token: context.auth?.deviceToken ?? "",
     });
     device ??= new Device(); // Only create new device if load failed
     device.user = user;
@@ -46,6 +46,6 @@ export const login = async (
     await context.db.getRepository(Device).save(device);
 
     return {
-        token: signToken({ userid: user.id, deviceToken: device.token })
+        token: signToken({ userid: user.id, deviceToken: device.token }),
     };
 };

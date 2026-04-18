@@ -10,7 +10,7 @@ import {
     runGraphQlQuery,
     registerUser,
     addShoppingList,
-    addShoppingListItem
+    addShoppingListItem,
 } from "./common";
 
 let db: DataSource | null = null;
@@ -42,7 +42,7 @@ describe("an unauthorized user", () => {
                     ownerId
                     name
                 }
-            }`
+            }`,
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
@@ -56,7 +56,7 @@ describe("an unauthorized user", () => {
                     name
                 }
             }`,
-            variables: { addShoppingListInput: { name: "listName" } }
+            variables: { addShoppingListInput: { name: "listName" } },
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
@@ -70,8 +70,8 @@ describe("an unauthorized user", () => {
                 }
             }`,
             variables: {
-                renameShoppingListInput: { id: 1, name: "newListName" }
-            }
+                renameShoppingListInput: { id: 1, name: "newListName" },
+            },
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
@@ -85,8 +85,8 @@ describe("an unauthorized user", () => {
                 }
             }`,
             variables: {
-                deleteShoppingListInput: { id: 1 }
-            }
+                deleteShoppingListInput: { id: 1 },
+            },
         });
         expect(response.body.errors[0].message).toBe("Not Authorised!");
     });
@@ -110,9 +110,9 @@ describe("an authorized user", () => {
                         {
                             tableName:
                                 db.getRepository(ShoppingList).metadata
-                                    .tableName
-                        }
-                    ]
+                                    .tableName,
+                        },
+                    ],
                 );
         }
 
@@ -132,7 +132,7 @@ describe("an authorized user", () => {
                         id
                     }
                 }
-            }`
+            }`,
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -140,13 +140,13 @@ describe("an authorized user", () => {
         expect(response.body.data?.shoppingLists[0].ownerId).toBe("1");
         expect(response.body.data?.shoppingLists[0].name).toBe("testList");
         expect(response.body.data?.shoppingLists[0].listItems).toStrictEqual(
-            []
+            [],
         );
         expect(response.body.data?.shoppingLists).toHaveLength(1);
     });
 
     it("should be able to add a new shopping list", async () => {
-        // Add a new shopping list
+    // Add a new shopping list
         const response = await runGraphQlQuery({
             query: `mutation AddShoppingList($addShoppingListInput: addShoppingListInput!) {
                 addShoppingList(input: $addShoppingListInput) {
@@ -158,7 +158,7 @@ describe("an authorized user", () => {
                     }
                 }
             }`,
-            variables: { addShoppingListInput: { name: "secondList" } }
+            variables: { addShoppingListInput: { name: "secondList" } },
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -178,21 +178,21 @@ describe("an authorized user", () => {
                         id
                     }
                 }
-            }`
+            }`,
         });
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
             {
                 id: "1",
                 ownerId: "1",
                 name: "testList",
-                listItems: []
+                listItems: [],
             },
             {
                 id: "2",
                 ownerId: "1",
                 name: "secondList",
-                listItems: []
-            }
+                listItems: [],
+            },
         ]);
         expect(responseCheck.body.data?.shoppingLists).toHaveLength(2);
     });
@@ -209,14 +209,14 @@ describe("an authorized user", () => {
                 }
             }`,
             variables: {
-                renameShoppingListInput: { id: 2, name: "updatedValue" }
-            }
+                renameShoppingListInput: { id: 2, name: "updatedValue" },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.renameShoppingList.success).toBe(true);
         expect(
-            response.body.data?.renameShoppingList.failureMessage
+            response.body.data?.renameShoppingList.failureMessage,
         ).toBeNull();
 
         // Verify that all items are now returned
@@ -230,7 +230,7 @@ describe("an authorized user", () => {
                         id
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -238,14 +238,14 @@ describe("an authorized user", () => {
                 id: "1",
                 ownerId: "1",
                 name: "testList",
-                listItems: []
+                listItems: [],
             },
             {
                 id: "2",
                 ownerId: "1",
                 name: "updatedValue",
-                listItems: []
-            }
+                listItems: [],
+            },
         ]);
     });
 
@@ -258,14 +258,14 @@ describe("an authorized user", () => {
                 }
             }`,
             variables: {
-                renameShoppingListInput: { id: 3, name: "updatedValue" }
-            }
+                renameShoppingListInput: { id: 3, name: "updatedValue" },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.renameShoppingList.success).toBe(false);
         expect(response.body.data?.renameShoppingList.failureMessage).toBe(
-            "Unknown list"
+            "Unknown list",
         );
 
         // Verify that lists are not touched
@@ -279,7 +279,7 @@ describe("an authorized user", () => {
                         id
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -287,13 +287,13 @@ describe("an authorized user", () => {
                 id: "1",
                 ownerId: "1",
                 name: "testList",
-                listItems: []
-            }
+                listItems: [],
+            },
         ]);
     });
 
     it("should not be able to rename a shopping list the user doesn't own", async () => {
-        // First login with second user
+    // First login with second user
         await login(1, true);
 
         // Try to rename the shopping list owned by first user
@@ -305,14 +305,14 @@ describe("an authorized user", () => {
                 }
             }`,
             variables: {
-                renameShoppingListInput: { id: 1, name: "updatedValue" }
-            }
+                renameShoppingListInput: { id: 1, name: "updatedValue" },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.renameShoppingList.success).toBe(false);
         expect(response.body.data?.renameShoppingList.failureMessage).toBe(
-            "Unknown list"
+            "Unknown list",
         );
 
         // Verify that lists are not touched
@@ -327,7 +327,7 @@ describe("an authorized user", () => {
                         id
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -335,8 +335,8 @@ describe("an authorized user", () => {
                 id: "1",
                 ownerId: "1",
                 name: "testList",
-                listItems: []
-            }
+                listItems: [],
+            },
         ]);
     });
 
@@ -356,20 +356,20 @@ describe("an authorized user", () => {
                 }
             }`,
             variables: {
-                deleteShoppingListInput: { id: 2 }
-            }
+                deleteShoppingListInput: { id: 2 },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.deleteShoppingList.success).toBe(true);
         expect(
-            response.body.data?.deleteShoppingList.failureMessage
+            response.body.data?.deleteShoppingList.failureMessage,
         ).toBeNull();
 
         // Make sure that all list items are deleted.
         // We need to read this information directly from db, since we don't have
         // a dedicaded api for list items only.
-        const listItems = await db!.getRepository(ListItem).find();
+        const listItems = await db?.getRepository(ListItem).find();
         expect(listItems).toHaveLength(1);
 
         // Verify that correct items are now returned
@@ -385,7 +385,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -397,15 +397,15 @@ describe("an authorized user", () => {
                     {
                         id: "3",
                         value: "This should remain",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 
     it("should not be able to delete a shopping list the user doesn't own", async () => {
-        // Login with second user
+    // Login with second user
         await login(1, true);
 
         // Try to delete the shopping list owned by first user
@@ -417,14 +417,14 @@ describe("an authorized user", () => {
                 }
             }`,
             variables: {
-                deleteShoppingListInput: { id: 1 }
-            }
+                deleteShoppingListInput: { id: 1 },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.deleteShoppingList.success).toBe(false);
         expect(response.body.data?.deleteShoppingList.failureMessage).toBe(
-            "Unknown list"
+            "Unknown list",
         );
 
         // Verify that lists are not touched
@@ -439,7 +439,7 @@ describe("an authorized user", () => {
                         id
                     }
                 }
-            }`
+            }`,
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -448,8 +448,8 @@ describe("an authorized user", () => {
                 id: "1",
                 ownerId: "1",
                 name: "testList",
-                listItems: []
-            }
+                listItems: [],
+            },
         ]);
     });
 
@@ -462,14 +462,14 @@ describe("an authorized user", () => {
                 }
             }`,
             variables: {
-                deleteShoppingListInput: { id: 3 }
-            }
+                deleteShoppingListInput: { id: 3 },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.deleteShoppingList.success).toBe(false);
         expect(response.body.data?.deleteShoppingList.failureMessage).toBe(
-            "Unknown list"
+            "Unknown list",
         );
 
         // Verify that lists are not touched
@@ -483,7 +483,7 @@ describe("an authorized user", () => {
                         id
                     }
                 }
-            }`
+            }`,
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -492,8 +492,8 @@ describe("an authorized user", () => {
                 id: "1",
                 ownerId: "1",
                 name: "testList",
-                listItems: []
-            }
+                listItems: [],
+            },
         ]);
     });
 });

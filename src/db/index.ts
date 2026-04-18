@@ -14,9 +14,10 @@ function getDataConfig(): DataSourceOptions {
             type: "better-sqlite3",
             database: dbConfig.DB_NAME,
             synchronize: dbConfig.SYNCHRONIZE,
-            entities: [Device, User, ShoppingList, ListItem]
+            entities: [Device, User, ShoppingList, ListItem],
         };
-    } else if (dbConfig.DB_TYPE === "mysql" || dbConfig.DB_TYPE === "mariadb") {
+    }
+    else if (dbConfig.DB_TYPE === "mysql" || dbConfig.DB_TYPE === "mariadb") {
         return {
             type: "mysql",
             host: dbConfig.DB_HOST,
@@ -25,7 +26,7 @@ function getDataConfig(): DataSourceOptions {
             password: dbConfig.DB_PASS,
             database: dbConfig.DB_NAME,
             synchronize: dbConfig.SYNCHRONIZE,
-            entities: [Device, User, ShoppingList, ListItem]
+            entities: [Device, User, ShoppingList, ListItem],
         };
     }
 

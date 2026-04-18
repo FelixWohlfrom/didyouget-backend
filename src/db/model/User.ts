@@ -16,9 +16,9 @@ export class User {
     @Column()
     declare password: string;
 
-    @OneToMany(() => Device, (device) => device.user)
+    @OneToMany(() => Device, device => device.user)
     declare devices: Device[];
 
-    @OneToMany(() => ShoppingList, (shoppingList) => shoppingList.owner)
+    @OneToMany(() => ShoppingList, shoppingList => shoppingList.owner)
     declare shoppingLists: ShoppingList[];
 }

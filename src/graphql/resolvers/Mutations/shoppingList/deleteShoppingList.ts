@@ -5,7 +5,7 @@ import { DidYouGetLoginData } from "../../../../utils/auth/model";
 export const deleteShoppingList = async (
     _parent: object,
     args: { input: { id: number } },
-    context: { auth: DidYouGetLoginData; db: DataSource }
+    context: { auth: DidYouGetLoginData, db: DataSource },
 ) => {
     const { id } = args.input;
 
@@ -15,12 +15,12 @@ export const deleteShoppingList = async (
     if (list?.ownerId !== context.auth.userid) {
         return {
             success: false,
-            failureMessage: "Unknown list"
+            failureMessage: "Unknown list",
         };
     }
 
     await repo.delete(list);
     return {
-        success: true
+        success: true,
     };
 };

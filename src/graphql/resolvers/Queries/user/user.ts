@@ -5,7 +5,7 @@ import { DidYouGetLoginData } from "../../../../utils/auth/model";
 export const user = async (
     _parent: object,
     args: { id: number | undefined },
-    context: { auth: DidYouGetLoginData; db: DataSource }
+    context: { auth: DidYouGetLoginData, db: DataSource },
 ) => {
     let id = args.id;
     if (!id) {

@@ -5,7 +5,7 @@ import { DidYouGetLoginData } from "../../../../utils/auth/model";
 export const updateDeviceName = async (
     _parent: object,
     args: { input: { device: string } },
-    context: { auth: DidYouGetLoginData; db: DataSource }
+    context: { auth: DidYouGetLoginData, db: DataSource },
 ) => {
     const { device } = args.input;
 
@@ -14,6 +14,6 @@ export const updateDeviceName = async (
         .update({ token: context.auth.deviceToken }, { name: device });
 
     return {
-        success: true
+        success: true,
     };
 };

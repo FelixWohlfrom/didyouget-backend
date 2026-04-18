@@ -10,7 +10,7 @@ import {
     runGraphQlQuery,
     registerUser,
     addShoppingList,
-    addShoppingListItem
+    addShoppingListItem,
 } from "./common";
 
 let db: DataSource | null = null;
@@ -45,9 +45,9 @@ describe("an unauthorized user", () => {
             }`,
             variables: {
                 deleteShoppingListItemInput: {
-                    shoppingListItemId: 1
-                }
-            }
+                    shoppingListItemId: 1,
+                },
+            },
         });
 
         expect(response.body.errors[0].message).toBe("Not Authorised!");
@@ -75,9 +75,9 @@ describe("an authorized user", () => {
                                 db.getRepository(ShoppingList).metadata
                                     .tableName,
                             secondTable:
-                                db.getRepository(ListItem).metadata.tableName
-                        }
-                    ]
+                                db.getRepository(ListItem).metadata.tableName,
+                        },
+                    ],
                 );
         }
 
@@ -100,15 +100,15 @@ describe("an authorized user", () => {
             }`,
             variables: {
                 deleteShoppingListItemInput: {
-                    shoppingListItemId: 1
-                }
-            }
+                    shoppingListItemId: 1,
+                },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.deleteShoppingListItem.success).toBe(true);
         expect(
-            response.body.data?.deleteShoppingListItem.failureMessage
+            response.body.data?.deleteShoppingListItem.failureMessage,
         ).toBeNull();
 
         // Verify that only remaining items are returned
@@ -121,7 +121,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -130,10 +130,10 @@ describe("an authorized user", () => {
                     {
                         id: "2",
                         value: "secondItem",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 
@@ -147,15 +147,15 @@ describe("an authorized user", () => {
             }`,
             variables: {
                 deleteShoppingListItemInput: {
-                    shoppingListItemId: -1
-                }
-            }
+                    shoppingListItemId: -1,
+                },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.deleteShoppingListItem.success).toBe(false);
         expect(response.body.data?.deleteShoppingListItem.failureMessage).toBe(
-            "Unknown list item"
+            "Unknown list item",
         );
 
         // Verify that all items are now returned
@@ -168,7 +168,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -177,20 +177,20 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "listItem",
-                        bought: false
+                        bought: false,
                     },
                     {
                         id: "2",
                         value: "secondItem",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 
     it("should be able to delete a shopping list item only from an own list", async () => {
-        // Login as second user
+    // Login as second user
         await registerUser(1);
         await login(1, true);
         await addShoppingList("secondList");
@@ -206,15 +206,15 @@ describe("an authorized user", () => {
             }`,
             variables: {
                 deleteShoppingListItemInput: {
-                    shoppingListItemId: 1
-                }
-            }
+                    shoppingListItemId: 1,
+                },
+            },
         });
 
         expect(response.body.errors).toBeUndefined();
         expect(response.body.data?.deleteShoppingListItem.success).toBe(false);
         expect(response.body.data?.deleteShoppingListItem.failureMessage).toBe(
-            "Unknown list item"
+            "Unknown list item",
         );
 
         // Verify that all items are now not added for first user
@@ -228,7 +228,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -237,15 +237,15 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "listItem",
-                        bought: false
+                        bought: false,
                     },
                     {
                         id: "2",
                         value: "secondItem",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 });

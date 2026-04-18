@@ -5,8 +5,8 @@ import { ListItem } from "../../../../db/model/ListItem";
 
 export const addShoppingListItem = async (
     _parent: object,
-    args: { input: { shoppingListId: number; value: string } },
-    context: { auth: DidYouGetLoginData; db: DataSource }
+    args: { input: { shoppingListId: number, value: string } },
+    context: { auth: DidYouGetLoginData, db: DataSource },
 ) => {
     const { shoppingListId, value } = args.input;
 

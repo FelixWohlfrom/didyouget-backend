@@ -6,7 +6,7 @@ import { DataSource } from "typeorm";
 export const isAuthorized = rule()(async (
     _parent: object,
     _args: object,
-    context: { auth: DidYouGetLoginData | undefined; db: DataSource }
+    context: { auth: DidYouGetLoginData | undefined, db: DataSource },
 ) => {
     if (!context.auth?.deviceToken) {
         return false;

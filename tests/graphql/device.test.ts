@@ -4,7 +4,7 @@ import {
     stopServer,
     login,
     runGraphQlQuery,
-    registerUser
+    registerUser,
 } from "./common";
 
 // before the tests we spin up a new Apollo Server
@@ -32,7 +32,7 @@ describe("an unauthorized user", () => {
                     firstSeen
                     lastSeen
                 }
-            }`
+            }`,
         });
 
         expect(response.body.errors[0].message).toBe("Not Authorised!");
@@ -45,7 +45,7 @@ describe("an unauthorized user", () => {
                     success
                 }
             }`,
-            variables: { deviceInput: { device: "testDevice" } }
+            variables: { deviceInput: { device: "testDevice" } },
         });
 
         expect(response.body.errors[0].message).toBe("Not Authorised!");
@@ -66,7 +66,7 @@ describe("an authorized user", () => {
                     firstSeen
                     lastSeen
                 }
-            }`
+            }`,
         });
 
         expect(response.body.errors).toBeUndefined();
@@ -78,14 +78,14 @@ describe("an authorized user", () => {
     });
 
     it("should be able to update the device name", async () => {
-        // First update the device name
+    // First update the device name
         const responseUpdate = await runGraphQlQuery({
             query: `mutation UpdateDeviceName($deviceInput: deviceInput!) {
                 updateDeviceName(input: $deviceInput) {
                     success
                 }
             }`,
-            variables: { deviceInput: { device: "testDevice" } }
+            variables: { deviceInput: { device: "testDevice" } },
         });
 
         expect(responseUpdate.body.errors).toBeUndefined();
@@ -98,7 +98,7 @@ describe("an authorized user", () => {
                     name
                     loggedin
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.errors).toBeUndefined();

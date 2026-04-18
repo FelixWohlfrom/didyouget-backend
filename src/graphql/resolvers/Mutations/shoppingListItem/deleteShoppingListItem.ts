@@ -7,10 +7,10 @@ export const deleteShoppingListItem = async (
     _parent: object,
     args: {
         input: {
-            shoppingListItemId: number;
-        };
+            shoppingListItemId: number
+        }
     },
-    context: { auth: DidYouGetLoginData; db: DataSource }
+    context: { auth: DidYouGetLoginData, db: DataSource },
 ) => {
     const { shoppingListItemId } = args.input;
 
@@ -23,10 +23,10 @@ export const deleteShoppingListItem = async (
 
     // we know that we only have valid links in our db, so either we have both
     // list item and list, or none
-    if (!listItem || list!.ownerId !== context.auth.userid) {
+    if (!listItem || list?.ownerId !== context.auth.userid) {
         return {
             success: false,
-            failureMessage: "Unknown list item"
+            failureMessage: "Unknown list item",
         };
     }
 

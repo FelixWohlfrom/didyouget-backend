@@ -8,7 +8,7 @@ import {
     login,
     runGraphQlQuery,
     registerUser,
-    addShoppingList
+    addShoppingList,
 } from "./common";
 import { DataSource } from "typeorm";
 
@@ -46,9 +46,9 @@ describe("an unauthorized user", () => {
             variables: {
                 addShoppingListItemInput: {
                     shoppingListId: 1,
-                    value: "listItem"
-                }
-            }
+                    value: "listItem",
+                },
+            },
         });
 
         expect(response.body.errors[0].message).toBe("Not Authorised!");
@@ -76,9 +76,9 @@ describe("an authorized user", () => {
                                 db.getRepository(ShoppingList).metadata
                                     .tableName,
                             secondTable:
-                                db.getRepository(ListItem).metadata.tableName
-                        }
-                    ]
+                                db.getRepository(ListItem).metadata.tableName,
+                        },
+                    ],
                 );
         }
 
@@ -96,9 +96,9 @@ describe("an authorized user", () => {
             variables: {
                 addShoppingListItemInput: {
                     shoppingListId: 1,
-                    value: "listItem"
-                }
-            }
+                    value: "listItem",
+                },
+            },
         });
         expect(response.body.errors).toBeUndefined();
     });
@@ -113,7 +113,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         const listItem = response.body.data?.shoppingLists[0].listItems[0];
@@ -123,7 +123,7 @@ describe("an authorized user", () => {
     });
 
     it("should be able to add a new shopping list item", async () => {
-        // Add a new shopping list item
+    // Add a new shopping list item
         const response = await runGraphQlQuery({
             query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
                 addShoppingListItem(input: $addShoppingListItemInput) {
@@ -135,9 +135,9 @@ describe("an authorized user", () => {
             variables: {
                 addShoppingListItemInput: {
                     shoppingListId: 1,
-                    value: "secondItem"
-                }
-            }
+                    value: "secondItem",
+                },
+            },
         });
 
         const newItem = response.body.data?.addShoppingListItem;
@@ -156,7 +156,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -165,20 +165,20 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "listItem",
-                        bought: false
+                        bought: false,
                     },
                     {
                         id: "2",
                         value: "secondItem",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 
     it("should not be able to add items to non existing lists", async () => {
-        // Add a new shopping list item to a non existing list
+    // Add a new shopping list item to a non existing list
         const response = await runGraphQlQuery({
             query: `mutation AddShoppingListItem($addShoppingListItemInput: addShoppingListItemInput!) {
                 addShoppingListItem(input: $addShoppingListItemInput) {
@@ -190,9 +190,9 @@ describe("an authorized user", () => {
             variables: {
                 addShoppingListItemInput: {
                     shoppingListId: 2,
-                    value: "secondItem"
-                }
-            }
+                    value: "secondItem",
+                },
+            },
         });
 
         const newItem = response.body.data?.addShoppingListItem;
@@ -201,7 +201,7 @@ describe("an authorized user", () => {
     });
 
     it("should be able to add a new shopping list item only to an own list", async () => {
-        // Login as second user
+    // Login as second user
         await registerUser(1);
         await login(1, true);
 
@@ -217,9 +217,9 @@ describe("an authorized user", () => {
             variables: {
                 addShoppingListItemInput: {
                     shoppingListId: 1,
-                    value: "secondItem"
-                }
-            }
+                    value: "secondItem",
+                },
+            },
         });
 
         const newItem = response.body.data?.addShoppingListItem;
@@ -237,7 +237,7 @@ describe("an authorized user", () => {
                         bought
                     }
                 }
-            }`
+            }`,
         });
 
         expect(responseCheck.body.data?.shoppingLists).toStrictEqual([
@@ -246,10 +246,10 @@ describe("an authorized user", () => {
                     {
                         id: "1",
                         value: "listItem",
-                        bought: false
-                    }
-                ]
-            }
+                        bought: false,
+                    },
+                ],
+            },
         ]);
     });
 });

@@ -13,7 +13,7 @@ export const permissions = shield(
             // User
             isLoggedIn: isAuthorized,
             user: isAuthorized,
-            users: isAuthorized
+            users: isAuthorized,
         },
         Mutation: {
             // Device
@@ -29,10 +29,10 @@ export const permissions = shield(
             updateShoppingListItem: isAuthorized,
             // User
             updateUser: isAuthorized,
-            logout: isAuthorized
-        }
+            logout: isAuthorized,
+        },
     },
     {
-        allowExternalErrors: envHandler.isDevelopmentInstance()
-    }
+        allowExternalErrors: envHandler.isDevelopmentInstance(),
+    },
 );

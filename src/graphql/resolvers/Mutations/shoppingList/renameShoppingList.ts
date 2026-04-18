@@ -4,8 +4,8 @@ import { DidYouGetLoginData } from "../../../../utils/auth/model";
 
 export const renameShoppingList = async (
     _parent: object,
-    args: { input: { id: number; name: string } },
-    context: { auth: DidYouGetLoginData; db: DataSource }
+    args: { input: { id: number, name: string } },
+    context: { auth: DidYouGetLoginData, db: DataSource },
 ) => {
     const { id, name } = args.input;
 
@@ -15,7 +15,7 @@ export const renameShoppingList = async (
     if (list?.ownerId !== context.auth.userid) {
         return {
             success: false,
-            failureMessage: "Unknown list"
+            failureMessage: "Unknown list",
         };
     }
 
@@ -23,6 +23,6 @@ export const renameShoppingList = async (
     await repo.save(list);
 
     return {
-        success: true
+        success: true,
     };
 };
