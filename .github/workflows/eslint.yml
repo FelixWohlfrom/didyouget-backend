@@ -55,5 +55,5 @@ jobs:
       - name: Annotate ESLint results
         uses: ataylorme/eslint-annotate-action@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.ESLINT_SECRET }}
           post-comment: true
