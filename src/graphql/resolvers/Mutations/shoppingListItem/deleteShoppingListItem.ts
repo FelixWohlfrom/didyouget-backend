@@ -17,9 +17,13 @@ export const deleteShoppingListItem = async (
     const listItem = await context.db
         .getRepository(ListItem)
         .findOneBy([{ id: shoppingListItemId }]);
-    const list = await context.db
-        .getRepository(ShoppingList)
-        .findOneBy([{ id: listItem?.listId }]);
+
+    let list = null;
+    if (listItem) {
+        list = await context.db
+            .getRepository(ShoppingList)
+            .findOneBy([{ id: listItem?.listId }]);
+    }
 
     // we know that we only have valid links in our db, so either we have both
     // list item and list, or none
