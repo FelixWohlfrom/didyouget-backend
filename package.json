@@ -52,7 +52,7 @@
     "better-sqlite3": "^12.6.2",
     "dotenv": "^17.3.1",
     "graphql-middleware": "^6.1.35",
-    "graphql-scalars": "^1.25.0",
+    "graphql-scalars": "^2.0.0",
     "graphql-shield": "^7.6.5",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.17.3",
