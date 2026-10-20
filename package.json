@@ -45,9 +45,9 @@
   "dependencies": {
     "@apollo/server": "^5.4.0",
     "@as-integrations/fastify": "^3.1.0",
-    "@graphql-tools/graphql-file-loader": "^8.1.9",
-    "@graphql-tools/load": "^8.1.8",
-    "@graphql-tools/schema": "^10.0.31",
+    "@graphql-tools/graphql-file-loader": "^9.0.0",
+    "@graphql-tools/load": "^9.0.0",
+    "@graphql-tools/schema": "^11.0.0",
     "argon2": "^0.45.0",
     "better-sqlite3": "^12.6.2",
     "dotenv": "^18.0.0",
