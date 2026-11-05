@@ -26,4 +26,4 @@ const boostrap = async () => {
     }
 };
 
-boostrap();
+void boostrap();
