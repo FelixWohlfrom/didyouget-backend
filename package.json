@@ -63,6 +63,9 @@
     "@istanbuljs/load-nyc-config": {
       "js-yaml": "^5.2.0"
     },
+    "@apollo/server": {
+      "@graphql-tools/utils": "^13.0.0"
+    },
     "@graphql-tools/delegate": {
       "@graphql-tools/utils": "^13.0.0"
     },
